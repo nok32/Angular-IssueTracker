@@ -4,15 +4,9 @@
 angular.module('IssueTracker', [
     'ngRoute',
     'IssueTracker.view1',
-<<<<<<< HEAD
-    'IssueTracker.user',
-]).config(['$routeProvider', function($routeProvider) {
-=======
+    'IssueTracker.identifier',
+    'IssueTracker.mainController',
     'IssueTracker.user'
-])
-    .constant('BASE_URL', 'http://softuni-issue-tracker.azurewebsites.net')
-
-    .config(['$routeProvider', function($routeProvider) {
->>>>>>> eed7d360f7c0b2ce8428ca9318c7f6627957ed96
+]).config(['$routeProvider', function($routeProvider) {
   $routeProvider.otherwise({redirectTo: '/view1'});
 }]);
