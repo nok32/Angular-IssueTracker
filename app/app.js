@@ -6,7 +6,8 @@ angular.module('IssueTracker', [
     'IssueTracker.view1',
     'IssueTracker.identifier',
     'IssueTracker.mainController',
-    'IssueTracker.user'
+    'IssueTracker.user',
+    'IssueTracker.home',
 ]).config(['$routeProvider', function($routeProvider) {
-  $routeProvider.otherwise({redirectTo: '/view1'});
+  $routeProvider.otherwise({redirectTo: '/'});
 }]);

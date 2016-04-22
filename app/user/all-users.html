@@ -1,4 +1,7 @@
-<div>
-    <li ng-repeat="curentuser in allUsers">Id {{curentuser.Id}}-- Name {{curentuser.Username}}-- Is Administrator {{curentuser.isAdmin}}</li>
+<div class="row">
+    <ul class="list-group">
+        <h1>All Users:</h1>
+        <li class="list-group-item" ng-repeat="curentuser in allUsers">Id {{curentuser.Id}}-- Name {{curentuser.Username}}-- Is Administrator {{curentuser.isAdmin}}</li>
+    </ul>
     <button ng-click="getUsers()" class="btn btn-default">Get all users</button>
 </div>

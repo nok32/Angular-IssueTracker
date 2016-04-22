@@ -36,4 +36,4 @@ angular.module('IssueTracker.mainController', [])
             post: post,
             get: get
         };
-    }])
+    }]);

@@ -23,11 +23,19 @@ angular.module('IssueTracker.identifier', [])
             $rootScope.identity = user;
         };
 
+        function isAuthenticated(){
+            if ($rootScope.identity !== undefined) {
+                return true;
+            }
+            return false;
+        }
+
         return {
             getToken: getToken,
             setIdentity: setIdentity,
             getUsername: getUsername,
             isAdmin:isAdmin,
-            getId: getId
+            getId: getId,
+            isAuthenticated: isAuthenticated
         };
     }]);

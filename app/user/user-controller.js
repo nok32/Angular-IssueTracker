@@ -17,9 +17,10 @@ angular.module('IssueTracker.user', [])
 
     .controller('UserController', [
         '$scope',
+        '$location',
         'requester',
         'identity',
-        function ($scope, requester, identity) {
+        function ($scope, $location,requester, identity) {
 
             $scope.register = function(user) {
                 var url = 'api/Account/Register';
@@ -64,13 +65,15 @@ angular.module('IssueTracker.user', [])
                         };
 
                         identity.setIdentity(user);
+
+                        $location.path('/');
+
                     },function(error){
                         console.log(error);
                     })
             }
 
             $scope.getUsers =function(){
-                console.log($scope);
                 var url = 'Users';
                 var header = {
                     headers:{
