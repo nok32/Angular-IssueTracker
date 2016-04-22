@@ -1,0 +1,27 @@
+<div class="col-sm-6">
+    <!-- FORM ============ -->
+
+    <form name="userFormLogin" ng-submit="submitForm()" novalidate>
+
+        <!-- EMAIL -->
+        <div class="form-group" ng-class="{ 'has-error' : userForm.email.$invalid && !userForm.email.$pristine }">
+            <label>Username</label>
+            <input type="email" name="email" class="form-control" ng-model="user.email" required>
+            <p ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="help-block">Enter a valid username.</p>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group" ng-class="{ 'has-error' : userForm.password.$invalid && !userForm.password.$pristine }">
+            <label>Password</label>
+            <input type="password" name="password" class="form-control" ng-model="user.password" ng-minlength="6" required>
+            <p ng-show="userForm.password.$invalid && !userForm.password.$pristine" class="help-block">Password is required.</p>
+        </div>
+
+        <button ng-click="login(user)" class="btn btn-primary" ng-disabled="userFormLogin.$invalid">Login</button>
+<<<<<<< HEAD
+        <a class="btn btn-primary" href="#/user/register">Register</a>
+=======
+
+>>>>>>> eed7d360f7c0b2ce8428ca9318c7f6627957ed96
+    </form>
+</div>
