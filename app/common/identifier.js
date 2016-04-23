@@ -4,7 +4,9 @@ angular.module('IssueTracker.identifier', [])
 
     .factory('identity', ['$rootScope', function($rootScope){
         function getToken() {
-            return $rootScope.identity.token;
+            if ($rootScope.identity) {
+                return $rootScope.identity.token;
+            }
         };
 
         function isAdmin(){
@@ -30,12 +32,17 @@ angular.module('IssueTracker.identifier', [])
             return false;
         }
 
+        function logout(){
+            $rootScope.identity = undefined;
+        }
+
         return {
             getToken: getToken,
             setIdentity: setIdentity,
             getUsername: getUsername,
             isAdmin:isAdmin,
             getId: getId,
-            isAuthenticated: isAuthenticated
+            isAuthenticated: isAuthenticated,
+            logout: logout
         };
     }]);

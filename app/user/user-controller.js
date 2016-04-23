@@ -73,6 +73,11 @@ angular.module('IssueTracker.user', [])
                     })
             }
 
+            $scope.logout = function(){
+                identity.logout();
+                $location.path('app/home');
+            };
+
             $scope.getUsers =function(){
                 var url = 'Users';
                 var header = {

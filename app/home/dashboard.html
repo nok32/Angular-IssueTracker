@@ -1,9 +1,31 @@
 <div class="row">
-    <button class="btn btn-success">Dashboard</button>
-    <button class="btn btn-success">Projects</button>
-    <br />
-    <h1>Dashboard</h1>
-    <h1>Affiliated Projects</h1>
-    <a>entirely</a>
-    <a>new project</a>
+    <div class="col-md-6">
+        <button class="btn btn-success">Dashboard</button>
+        <button class="btn btn-success">Projects</button>
+        <br />
+        <h1>Dashboard</h1>
+        <h1>Affiliated Projects</h1>
+        <a>entirely</a>
+        <a>new project</a>
+    </div>
+    <div class="col-md-6">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Project</th>
+                        <th>Due Date</th>
+                    </tr>
+                </thead>
+                <tr ng-repeat="project in issues">
+                    <td>{{project.Title}}</td>
+                    <td>{{project.Description}}</td>
+                    <td>{{project.Project.Name}}</td>
+                    <td>{{project.DueDate}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
 </div>
