@@ -16,6 +16,13 @@ angular.module('IssueTracker.home', [])
         }
     })
 
+    .directive('user', function() {
+        return {
+            restrict: 'A',
+            templateUrl: 'app/user/user.html'
+        }
+    })
+
     .controller('HomeController', [
         '$scope',
         '$location',
@@ -25,29 +32,37 @@ angular.module('IssueTracker.home', [])
 
             $scope.isAuthenticated = identity.isAuthenticated();
 
+            $scope.userId = identity.getId();
+
+            $scope.userName = identity.getUsername();
+
             $scope.redirect = function(){
                 $location.path('/user/login');
             };
 
-            $scope.getMyIssues = function(){
-                var url = 'Issues/me?pageSize=' + 10 +'&pageNumber=' + 5 + '&orderBy=title';
+            $scope.getMyIssues = function(pageSize, pageNumber, orderByType){
+                var url = 'Issues/me?pageSize=' + pageSize +'&pageNumber=' + pageNumber + '&orderBy=' + orderByType;
                 var header = {
                     headers:{
                         Authorization: 'Bearer ' + identity.getToken()
                     }
-                }
+                };
 
 
                 requester.get(url, header)
                     .then(function(success){
-                        console.log(success);
-                        $scope.issues = success.Issues;
+                        $scope.issues = success;
+                        $scope.pages = [];
+                        for (var i = 0; i <  $scope.issues.TotalPages; i++) {
+                            $scope.pages.push(i + 1);
+                        }
+                        console.log($scope.issues);
                     });
-                    //TODO error
+                //TODO error
 
             };
-            if (angular.isDefined(identity.getToken())) {
-                $scope.issues = $scope.getMyIssues() ;
-            }
 
+            if (angular.isDefined(identity.getToken())) {
+                $scope.issues = $scope.getMyIssues(5, 1, 'DueDate desc');
+            }
         }]);

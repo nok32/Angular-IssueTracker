@@ -5,20 +5,24 @@ angular.module('IssueTracker.identifier', [])
     .factory('identity', ['$rootScope', function($rootScope){
         function getToken() {
             if ($rootScope.identity) {
-                return $rootScope.identity.token;
+                return $rootScope.identity.Token;
             }
         };
 
         function isAdmin(){
-            return $rootScope.identity.isAdmin;
+            return $rootScope.identity.IsAdmin;
         }
 
         function getUsername() {
-            return $rootScope.identity.username;
+            if ($rootScope.identity) {
+                return $rootScope.identity.Username;
+            }
         };
 
         function getId(){
-            return $rootScope.identity.Id;
+            if ($rootScope.identity) {
+                return $rootScope.identity.Id;
+            }
         }
 
         function setIdentity(user) {

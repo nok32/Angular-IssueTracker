@@ -2,33 +2,33 @@
     <div class="col-sm-6">
         <!-- FORM ============ -->
 
-        <form name="userForm"  novalidate>
-
+        <form name="userFormRegister" novalidate>
+            <fieldset>
+                <legend>Register Form</legend>
             <!-- EMAIL -->
-            <div class="form-group" ng-class="{ 'has-error' : userForm.email.$invalid && !userForm.email.$pristine }">
-                <label>Email</label>
-                <input type="email" name="email" class="form-control" ng-model="user.email" required>
-                <p ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="help-block">Enter a valid email.</p>
-            </div>
+                <div class="form-group" ng-class="{ 'has-error' : userFormRegister.email.$invalid && !userFormRegister.email.$pristine }">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-control" ng-model="user.email" required>
+                    <p ng-show="userFormRegister.email.$invalid && !userFormRegister.email.$pristine" class="help-block">Enter a valid email.</p>
+                </div>
 
-            <!-- Password -->
-            <div class="form-group" ng-class="{ 'has-error' : userForm.password.$invalid && !userForm.password.$pristine }">
-                <label>Password</label>
-                <input type="password" name="password" class="form-control" ng-model="user.password" ng-minlength="6" required>
-                <p ng-show="userForm.password.$invalid && !userForm.password.$pristine" class="help-block">Password is required.</p>
-            </div>
+                <!-- Password -->
+                <div class="form-group" ng-class="{ 'has-error' : userFormRegister.password.$invalid && !userFormRegister.password.$pristine }">
+                    <label>Password</label>
+                    <input type="password" name="password" class="form-control" ng-model="user.password" ng-minlength="6" required>
+                    <p ng-show="userFormRegister.password.$invalid && !userFormRegister.password.$pristine" class="help-block">Password is required.</p>
+                </div>
 
-            <!-- Confirm  Password-->
-            <div class="form-group" ng-class="{ 'has-error' : userForm.confirmPassword.$invalid && !userForm.confirmPassword.$pristine }">
-                <label>Confirm  Password</label>
-                <input type="password" name="confirmPassword" class="form-control" ng-model="user.confirmPassword" ng-minlength="6" required>
-                <p ng-show="userForm.confirmPassword.$invalid && !userForm.confirmPassword.$pristine" class="help-block">Confirm Password is required.</p>
-                <p ng-show="errorConfirmPassword" class="help-block">Confirm Password must be the same like password!</p>
-            </div>
+                <!-- Confirm  Password-->
+                <div class="form-group" ng-class="{ 'has-error' : userFormRegister.confirmPassword.$invalid && !userFormRegister.confirmPassword.$pristine }">
+                    <label>Confirm  Password</label>
+                    <input type="password" name="confirmPassword" class="form-control" ng-model="user.confirmPassword" ng-minlength="6" required>
+                    <p ng-show="userFormRegister.confirmPassword.$invalid && !userFormRegister.confirmPassword.$pristine" class="help-block">Confirm Password is required.</p>
+                    <p ng-show="errorConfirmPassword" class="help-block">Confirm Password must be the same like password!</p>
+                </div>
 
-            <button ng-click="register(user)" class="btn btn-primary" ng-disabled="userForm.$invalid">Register</button>
-            <a class="btn btn-primary" href="#/user/login">Login</a>
-
+                <button ng-click="register(user)" class="btn btn-primary" ng-disabled="userFormRegister.$invalid">Register</button>
+            </fieldset>
         </form>
     </div>
 </div>

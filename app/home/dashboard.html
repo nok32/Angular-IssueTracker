@@ -1,7 +1,6 @@
 <div class="row">
+    <div main-menu></div>
     <div class="col-md-6">
-        <button class="btn btn-success">Dashboard</button>
-        <button class="btn btn-success">Projects</button>
         <br />
         <h1>Dashboard</h1>
         <h1>Affiliated Projects</h1>
@@ -19,13 +18,18 @@
                         <th>Due Date</th>
                     </tr>
                 </thead>
-                <tr ng-repeat="project in issues">
-                    <td>{{project.Title}}</td>
-                    <td>{{project.Description}}</td>
-                    <td>{{project.Project.Name}}</td>
-                    <td>{{project.DueDate}}</td>
+                <tr ng-repeat="issue in issues.Issues | orderBy: '-DueDate' : reverse">
+                    <td>{{issue.Title}}</td>
+                    <td>{{issue.Description}}</td>
+                    <td>{{issue.Project.Name}}</td>
+                    <td>{{issue.DueDate}}</td>
                 </tr>
             </table>
+            <ul class="pagination">
+                <ul class="pagination">
+                    <li ng-repeat="page in pages" ><a href="#/" ng-click="getMyIssues(5,  page, 'DueDate desc')" value="{{page}}">{{page}}<span class="sr-only">(current)</span></a></li>
+                </ul>
+            </ul>
         </div>
     </div>
 </div>

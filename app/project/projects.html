@@ -1,0 +1,7 @@
+<div class="row" ng-if="isAuthenticated || redirect()">
+    <div main-menu></div>
+    <div>
+        Hello from the project html
+        <li ng-repeat="unit in projects"><a ng-href="#/projects/{{unit.Id}}"><h1>{{unit.Name}}</h1></a></li>
+    </div>
+</div>

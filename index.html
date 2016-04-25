@@ -27,10 +27,8 @@
             <ul class="menu">
                 <li><a href="#/">Home</a></li>
                 <li><a href="#/view1">view1</a></li>
-                <li><a href="#/user/login">Login</a></li>
-                <li><a href="#/user/register">Register</a></li>
                 <li><a href="#/all-users">Get All Users</a></li>
-                <li><a ng-controller="UserController" ng-click="logout()" href="#/">Logout</a></li>
+                <li><a href="#/logout">Logout</a></li>
              </ul>
       </div>
       <div ng-view></div>
@@ -51,6 +49,7 @@
   <script src="app/common/identifier.js"></script>
   <script src="app/common/main-controller.js"></script>
     <script src="app/user/user-controller.js"></script>
+  <script src="app/project/project-controller.js"></script>
   <script src="app/home/home-controller.js"></script>
   <script src="app/bower_components/angular-route/angular-route.js"></script>
   <script src="app/app.js"></script>

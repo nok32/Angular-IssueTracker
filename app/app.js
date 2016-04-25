@@ -5,9 +5,10 @@ angular.module('IssueTracker', [
     'ngRoute',
     'IssueTracker.view1',
     'IssueTracker.identifier',
-    'IssueTracker.mainController',
+    'IssueTracker.main',
     'IssueTracker.user',
     'IssueTracker.home',
+    'IssueTracker.project',
 ]).config(['$routeProvider', function($routeProvider) {
   $routeProvider.otherwise({redirectTo: '/'});
 }]);

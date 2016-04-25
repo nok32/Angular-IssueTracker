@@ -1,19 +1,29 @@
 angular.module('IssueTracker.user', [])
 
     .config(['$routeProvider', function($routeProvider) {
-        $routeProvider.when('/user/register', {
-            templateUrl: 'app/user/user-register.html',
-            controller: 'UserController'
-        });
-        $routeProvider.when('/user/login', {
-            templateUrl: 'app/user/user-login.html',
-            controller: 'UserController'
-        });
         $routeProvider.when('/all-users', {
             templateUrl: 'app/user/all-users.html',
             controller: 'UserController'
         });
+        $routeProvider.when('/logout', {
+            templateUrl: 'app/user/user-logout.html',
+            controller: 'UserController'
+        });
     }])
+
+    .directive('login', function() {
+        return {
+            restrict: 'A',
+            templateUrl: 'app/user/user-login.html'
+        }
+    })
+
+    .directive('register', function() {
+        return {
+            restrict: 'A',
+            templateUrl: 'app/user/user-register.html'
+        }
+    })
 
     .controller('UserController', [
         '$scope',
@@ -43,10 +53,10 @@ angular.module('IssueTracker.user', [])
                 }
             };
 
-            $scope.login = function(user){
+            $scope.login = function(userLogin){
                 var url = 'api/Token';
-                var data = "userName=" + encodeURIComponent(user.email) +
-                    "&password=" + encodeURIComponent(user.password) +
+                var data = "userName=" + encodeURIComponent(userLogin.email) +
+                    "&password=" + encodeURIComponent(userLogin.password) +
                     "&grant_type=password";
 
                 var header = {
@@ -57,16 +67,24 @@ angular.module('IssueTracker.user', [])
 
                 requester.post(url, data, header)
                     .then(function(success){
-                        var user = {
-                            Id: success.Id,
-                            username: success.userName,
-                            token: success.access_token,
-                            isAdmin: success.isAdmin
+                        var header = {
+                            headers:{
+                                Authorization: 'Bearer ' + success.access_token
+                            }
                         };
+                        var user = {};
+                        requester.get('/Users/me', header)
+                            .then(function(currentUser){
+                                user.Id = currentUser.Id;
+                                user.IsAdmin = currentUser.isAdmin;
+                            });
+
+                        user.Username = success.userName;
+                        user.Token = success.access_token;
 
                         identity.setIdentity(user);
 
-                        $location.path('/');
+                        $location.path('/alabala');
 
                     },function(error){
                         console.log(error);
@@ -84,7 +102,7 @@ angular.module('IssueTracker.user', [])
                     headers:{
                         Authorization: 'Bearer ' + identity.getToken()
                     }
-                }
+                };
 
                 requester.get(url, header)
                     .then(function(success){

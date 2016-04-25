@@ -1,3 +1,4 @@
-<div class="row" ng-controller="HomeController" >
-    <div have-token ng-if="isAuthenticated || redirect()"></div>
+<div class="row">
+    <div have-token ng-if="isAuthenticated"></div>
+    <div user ng-if="!isAuthenticated"></div>
 </div>

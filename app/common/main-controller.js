@@ -1,5 +1,5 @@
 'use strict';
-angular.module('IssueTracker.mainController', [])
+angular.module('IssueTracker.main', [])
 
     .factory('requester', ['$http', '$q', function($http, $q){
         var BASE_URL = 'http://softuni-issue-tracker.azurewebsites.net/';
@@ -36,4 +36,19 @@ angular.module('IssueTracker.mainController', [])
             post: post,
             get: get
         };
-    }]);
+    }])
+
+    .directive('mainMenu', function() {
+        return {
+            restrict: 'A',
+            templateUrl: 'app/common/main-menu.html'
+        }
+    })
+
+    .controller('MainController', ['$scope','identity', function($scope, identity) {
+        if (angular.isDefined(identity.getToken())) {
+            $scope.currentUserId = function(){
+                return identity.getId();
+            }
+        }
+    }])
