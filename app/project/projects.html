@@ -1,7 +1,6 @@
 <div class="row" ng-if="isAuthenticated || redirect()">
     <div main-menu></div>
     <div>
-        Hello from the project html
-        <li ng-repeat="unit in projects"><a ng-href="#/projects/{{unit.Id}}"><h1>{{unit.Name}}</h1></a></li>
+        <li ng-repeat="curentProject in projects"><h1>{{curentProject.Name}}<a class="btn btn-success" ng-href="#/projects/{{curentProject.Id}}">View</a></h1></li>
     </div>
 </div>

@@ -51,4 +51,4 @@ angular.module('IssueTracker.main', [])
                 return identity.getId();
             }
         }
-    }])
+    }]);

@@ -48,7 +48,6 @@ angular.module('IssueTracker.home', [])
                     }
                 };
 
-
                 requester.get(url, header)
                     .then(function(success){
                         $scope.issues = success;
@@ -63,6 +62,6 @@ angular.module('IssueTracker.home', [])
             };
 
             if (angular.isDefined(identity.getToken())) {
-                $scope.issues = $scope.getMyIssues(5, 1, 'DueDate desc');
+                $scope.getMyIssues(5, 1, 'DueDate desc');
             }
         }]);

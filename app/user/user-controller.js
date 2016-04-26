@@ -11,6 +11,33 @@ angular.module('IssueTracker.user', [])
         });
     }])
 
+    .factory('users', ['$q','requester', 'identity', function($q, requester, identity){
+        function getUsers(){
+            var url = 'Users';
+            var header = {
+                headers:{
+                    Authorization: 'Bearer ' + identity.getToken()
+                }
+            };
+
+            var deffered = $q.defer();
+
+            requester.get(url, header)
+                .then(function(success){
+                    deffered.resolve(success);
+                },
+                function(error){
+                    deffered.reject(error);
+                });
+
+            return deffered.promise;
+        };
+
+        return {
+            getUsers: getUsers
+        };
+    }])
+
     .directive('login', function() {
         return {
             restrict: 'A',
@@ -30,7 +57,8 @@ angular.module('IssueTracker.user', [])
         '$location',
         'requester',
         'identity',
-        function ($scope, $location,requester, identity) {
+        'users',
+        function ($scope, $location,requester, identity, users) {
 
             $scope.register = function(user) {
                 var url = 'api/Account/Register';
@@ -96,22 +124,12 @@ angular.module('IssueTracker.user', [])
                 $location.path('app/home');
             };
 
-            $scope.getUsers =function(){
-                var url = 'Users';
-                var header = {
-                    headers:{
-                        Authorization: 'Bearer ' + identity.getToken()
-                    }
-                };
+            $scope.getUsers = function(){
+                users.getUsers()
+                    .then(function(responce){
+                        $scope.allUsers = responce;
+                    });
+            }
 
-                requester.get(url, header)
-                    .then(function(success){
-                        $scope.allUsers = success;
-                        console.log($scope.allUsers);
-                    },
-                    function(error){
-                        console.log(error);
-                    })
-            };
         }
     ]);

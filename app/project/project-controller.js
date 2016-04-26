@@ -13,63 +13,125 @@ angular.module('IssueTracker.project', [])
         });
     }])
 
+    .factory('projects', ['$q','requester', 'identity', function($q, requester, identity){
+        function getProjects(){
+            var url = 'Projects/?pageSize=100&pageNumber=1&{filter}=Lead';
+            var header = {
+                headers:{
+                    Authorization: 'Bearer ' + identity.getToken()
+                }
+            };
+
+            var deffered = $q.defer();
+
+            requester.get(url, header)
+                .then(function(success){
+                    deffered.resolve(success);
+                },
+                function(error){
+                    deffered.reject(error);
+                });
+
+            return deffered.promise;
+        };
+
+        function getProjectById(id){
+            var url = 'Projects/' + id;
+            var header = {
+                headers:{
+                    Authorization: 'Bearer ' + identity.getToken()
+                }
+            };
+
+            var deffered = $q.defer();
+
+            requester.get(url, header)
+                .then(function(success){
+                    deffered.resolve(success);
+                },
+                function(error){
+                    deffered.reject(error);
+                });
+
+            return deffered.promise;
+        }
+
+        return {
+            getProjects: getProjects,
+            getProjectById: getProjectById
+        };
+    }])
+
+    .directive('projectLeader', function() {
+        return {
+            restrict: 'A',
+            templateUrl: 'app/project/project-leader.html'
+        }
+    })
+
     .controller('ProjectController', [
         '$scope',
         '$location',
         '$routeParams',
         'requester',
         'identity',
-        function ($scope, $location, $routeParams, requester, identity) {
+        'projects',
+        function ($scope, $location, $routeParams, requester, identity, projects) {
 
             $scope.isAuthenticated = identity.isAuthenticated();
 
             $scope.userId = identity.getId();
 
+            $scope.getProjectIssues = function(id){
+                var url = 'Projects/' + id + '/Issues';
+                var header = {
+                    headers:{
+                        Authorization: 'Bearer ' + identity.getToken()
+                    }
+                }
+
+                requester.get(url, header)
+                    .then(function(success){
+                        console.log(success);
+                        $scope.issues = success;
+                    }, function(error){
+                        console.log(error);
+                    });
+            };
+
             $scope.redirect = function(){
                 $location.path('/home/home');
             }
 
-            $scope.getAllProjects = function() {
-                var url = 'Projects/?pageSize=10&pageNumber=10&{filter}=Lead';
-                var header = {
-                    headers:{
-                        Authorization: 'Bearer ' + identity.getToken()
-                    }
-                };
-
-                requester.get(url, header)
-                    .then(function(success){
-                        $scope.projects = success;
-                    }, function (error) {
-                        console.log(error);
-                    })
-
-            };
-
-            $scope.getProjectById = function(id){
-                var url = 'Projects/' + id;
-                var header = {
-                    headers:{
-                        Authorization: 'Bearer ' + identity.getToken()
-                    }
-                };
-
-                requester.get(url, header)
-                    .then(function(success){
-                        $scope.project = success;
-                        console.log($scope.project);
-                    }, function (error) {
-                        console.log(error);
-                    })
-
-            };
 
             if (angular.isDefined(identity.getToken())) {
-                $scope.projects = $scope.getAllProjects();
-                if ($routeParams.id) {
-                    $scope.project = $scope.getProjectById($routeParams.id);
-                }
 
+                projects.getProjects()
+                    .then(function(responce){
+                        $scope.projects = responce;
+                    })
+
+                if ($routeParams.id) {
+                    projects.getProjectById($routeParams.id)
+                        .then(function(success){
+                            $scope.project = success;
+
+                            console.log($scope.project);
+
+                            $scope.getProjectIssues($scope.project.Id);
+
+                            $scope.isCurrentUserProjectTeamLeaderOrAdmin = function(){
+                                if($scope.project.Lead.Id === $scope.userId || identity.isAdmin()){
+                                    return true;
+                                }else{
+                                    return false;
+                                }
+                            }
+
+                        }, function (error) {
+                            console.log(error);
+                        })
+                }
             }
         }
     ])
