@@ -12,19 +12,23 @@
         </p>
         <p>
             <label>Projects</label>
-            <select>
+            <select ng-model="issue.Project">
                 <option ng-repeat="currentProject in projects" value="{{currentProject}}">{{currentProject.Name}}</option>
             </select>
         </p>
         <p>
             <label>Priority</label>
-            <select>
+            <select ng-model="issue.Priority">
                 <option ng-repeat="priority in projectCurrent.Priorities" value="{{priority}}">{{priority.Name}}</option>
             </select>
         </p>
         <p>
+            <label>Priority</label>
+            <input ng-model="issue.Label" placeholder="{{projectLabels}}">
+        </p>
+        <p>
             <label>Assignee</label>
-            <select>
+            <select ng-model="issue.Assignee">
                 <option ng-repeat="user in users" value="{{user}}">{{user.Username}}</option>
             </select>
         </p>
@@ -32,5 +36,6 @@
             <label>DueDate</label>
             <input ng-model="issue.DueDate" type="datetime-local">
         </p>
+        <a ng-click="addIssue(issue)" class="btn btn-success">Add Issue</a>
     </form>
 </div>

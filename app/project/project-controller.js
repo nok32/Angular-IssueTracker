@@ -16,15 +16,10 @@ angular.module('IssueTracker.project', [])
     .factory('projects', ['$q','requester', 'identity', function($q, requester, identity){
         function getProjects(){
             var url = 'Projects/?pageSize=100&pageNumber=1&{filter}=Lead';
-            var header = {
-                headers:{
-                    Authorization: 'Bearer ' + identity.getToken()
-                }
-            };
 
             var deffered = $q.defer();
 
-            requester.get(url, header)
+            requester.get(url, identity.getHeaderWithToken())
                 .then(function(success){
                     deffered.resolve(success);
                 },
@@ -37,15 +32,10 @@ angular.module('IssueTracker.project', [])
 
         function getProjectById(id){
             var url = 'Projects/' + id;
-            var header = {
-                headers:{
-                    Authorization: 'Bearer ' + identity.getToken()
-                }
-            };
 
             var deffered = $q.defer();
 
-            requester.get(url, header)
+            requester.get(url, identity.getHeaderWithToken())
                 .then(function(success){
                     deffered.resolve(success);
                 },
@@ -84,13 +74,8 @@ angular.module('IssueTracker.project', [])
 
             $scope.getProjectIssues = function(id){
                 var url = 'Projects/' + id + '/Issues';
-                var header = {
-                    headers:{
-                        Authorization: 'Bearer ' + identity.getToken()
-                    }
-                }
 
-                requester.get(url, header)
+                requester.get(url, identity.getHeaderWithToken())
                     .then(function(success){
                         console.log(success);
                         $scope.issues = success;

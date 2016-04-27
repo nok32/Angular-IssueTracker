@@ -4,10 +4,22 @@ angular.module('IssueTracker.identifier', [])
 
     .factory('identity', ['$rootScope', function($rootScope){
         function getToken() {
-            if ($rootScope.identity) {
+            if($rootScope.identity){
                 return $rootScope.identity.Token;
             }
         };
+
+        function getHeaderWithToken(){
+            if($rootScope.identity){
+                var header = {
+                    headers:{
+                        Authorization: 'Bearer ' + getToken()
+                    }
+                };
+
+                return header;
+            }
+        }
 
         function isAdmin(){
             return $rootScope.identity.IsAdmin;
@@ -47,6 +59,7 @@ angular.module('IssueTracker.identifier', [])
             isAdmin:isAdmin,
             getId: getId,
             isAuthenticated: isAuthenticated,
-            logout: logout
+            logout: logout,
+            getHeaderWithToken: getHeaderWithToken
         };
     }]);

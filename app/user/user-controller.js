@@ -14,15 +14,10 @@ angular.module('IssueTracker.user', [])
     .factory('users', ['$q','requester', 'identity', function($q, requester, identity){
         function getUsers(){
             var url = 'Users';
-            var header = {
-                headers:{
-                    Authorization: 'Bearer ' + identity.getToken()
-                }
-            };
 
             var deffered = $q.defer();
 
-            requester.get(url, header)
+            requester.get(url, identity.getHeaderWithToken())
                 .then(function(success){
                     deffered.resolve(success);
                 },

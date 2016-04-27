@@ -42,13 +42,8 @@ angular.module('IssueTracker.home', [])
 
             $scope.getMyIssues = function(pageSize, pageNumber, orderByType){
                 var url = 'Issues/me?pageSize=' + pageSize +'&pageNumber=' + pageNumber + '&orderBy=' + orderByType;
-                var header = {
-                    headers:{
-                        Authorization: 'Bearer ' + identity.getToken()
-                    }
-                };
 
-                requester.get(url, header)
+                requester.get(url, identity.getHeaderWithToken())
                     .then(function(success){
                         $scope.issues = success;
                         $scope.pages = [];
