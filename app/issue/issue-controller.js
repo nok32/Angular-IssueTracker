@@ -7,6 +7,22 @@ angular.module('IssueTracker.issue', [])
             templateUrl: 'app/issue/add-issue.html',
             controller: 'IssueController'
         });
+        $routeProvider.when('/issues/:id', {
+            templateUrl: 'app/issue/issue.html',
+            controller: 'IssueController'
+        });
+    }])
+
+    .factory('issue', ['requester', 'identity', function(requester, identity){
+        function getIssueById(id){
+            var url = 'Issues/' + id;
+
+            return requester.get(url, identity.getHeaderWithToken());
+        }
+
+        return{
+            getIssueById : getIssueById
+        };
     }])
 
     .controller('IssueController', [
@@ -16,7 +32,8 @@ angular.module('IssueTracker.issue', [])
         'requester',
         'users',
         'projects',
-        function($scope, $routeParams, identity, requester, users, projects){
+        'issue',
+        function($scope, $routeParams, identity, requester, users, projects, issue){
             
             if($routeParams.add) {
                 $scope.isInIssueAdd = true;
@@ -24,67 +41,59 @@ angular.module('IssueTracker.issue', [])
 
                 users.getUsers()
                     .then(function(responce){
-                        $scope.users = responce;
+                        $scope.dataUsers = responce;
                     });
 
                 projects.getProjects()
                     .then(function(responce){
-                        $scope.projects = responce;
+                        $scope.dataProjects = responce;
                     });
 
                 projects.getProjectById($scope.projectId)
                     .then(function(responce){
                         $scope.projectCurrent = responce;
-                        var projectLabels = ' ';
+                        var projectLabels = []
                         $scope.projectCurrent.Labels.forEach(function(a){
-                            projectLabels += a.Name + ', ';
+                            projectLabels.push(a);
                         });
                         $scope.projectLabels = projectLabels
                     });
             }
 
+            if($routeParams.id) {
+                issue.getIssueById($routeParams.id)
+                    .then(function(success){
+                        $scope.issue = success;
+                        console.log($scope.issue);
+                    })
+            }
+
+
             $scope.addIssue = function(issue){
-                var assignee = {
-                    Id: issue.Assignee.Id,
-                    Username: issue.Assignee.Username,
-                    isAdmin: issue.Assignee.isAdmin
-                };
-
-                var author = {
-                    Id: identity.getId(),
-                    Username: identity.getUsername(),
-                    isAdmin: identity.isAdmin()
-                };
-
-                var project = {
-                    Id: issue.Project.Id,
-                    Name: issue.Project.Name
-                };
-
-                var status = {
-                    Id:2,
-                    Name: "Open"
-                };
-
-                var priority = {
-                    Id: issue.Priority.Id,
-                    Name: issue.Priority.Name
-                };
-
                 var data = {
-                    Assignee: assignee,
-                    Author: author,
-                    AvailableStatuses: [],
+                    Title: issue.Title,
                     Description: issue.Description,
                     DueDate: issue.DueDate,
-                    Labels: [],
-                    Priority: priority,
-                    Project: project,
-                    Status: status,
-                    Title: issue.Title
+                    ProjectId: JSON.parse(issue.Project).Id,
+                    AssigneeId: issue.Assignee.Id,
+                    PriorityId: JSON.parse(issue.Priority).Id,
+                    Labels: []
                 };
 
-                console.log(data);
+                var label = {
+                    Name:issue.Label
+                };
+
+                data.Labels.push(label);
+
+                var url = 'Issues/';
+
+                requester.post(url, data, identity.getHeaderWithToken())
+                    .then(function(success){
+                        console.log(success);
+                    }, function(error){
+                        console.log(error);
+                    });
 
                 //TODO
             }

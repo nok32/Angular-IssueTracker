@@ -15,17 +15,7 @@ angular.module('IssueTracker.user', [])
         function getUsers(){
             var url = 'Users';
 
-            var deffered = $q.defer();
-
-            requester.get(url, identity.getHeaderWithToken())
-                .then(function(success){
-                    deffered.resolve(success);
-                },
-                function(error){
-                    deffered.reject(error);
-                });
-
-            return deffered.promise;
+            return requester.get(url, identity.getHeaderWithToken());
         };
 
         return {

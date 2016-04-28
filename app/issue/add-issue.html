@@ -12,8 +12,10 @@
         </p>
         <p>
             <label>Projects</label>
+            <!--TODO to work with normal add issue-->
+            <!--<select ng-options="project.Name for project in dataProjects track by project.Id" ng-model="issue.Project"></select>-->
             <select ng-model="issue.Project">
-                <option ng-repeat="currentProject in projects" value="{{currentProject}}">{{currentProject.Name}}</option>
+                <option value="{{projectCurrent}}">{{projectCurrent.Name}}</option>
             </select>
         </p>
         <p>
@@ -23,18 +25,19 @@
             </select>
         </p>
         <p>
-            <label>Priority</label>
-            <input ng-model="issue.Label" placeholder="{{projectLabels}}">
+            <label>Label</label>
+            <input ng-model="issue.Label" list="labels" ng-model="issue.Label"  autocomplete="on" />
+            <datalist id="labels">
+                <option ng-repeat="label in projectLabels" value="{{label.Name}}"></option>
+            </datalist>
         </p>
         <p>
             <label>Assignee</label>
-            <select ng-model="issue.Assignee">
-                <option ng-repeat="user in users" value="{{user}}">{{user.Username}}</option>
-            </select>
+            <select ng-options="user.Username for user in dataUsers track by user.Id" ng-model="issue.Assignee"></select>
         </p>
         <p>
             <label>DueDate</label>
-            <input ng-model="issue.DueDate" type="datetime-local">
+            <input ng-model="issue.DueDate" type="date">
         </p>
         <a ng-click="addIssue(issue)" class="btn btn-success">Add Issue</a>
     </form>

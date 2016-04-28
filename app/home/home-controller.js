@@ -50,7 +50,6 @@ angular.module('IssueTracker.home', [])
                         for (var i = 0; i <  $scope.issues.TotalPages; i++) {
                             $scope.pages.push(i + 1);
                         }
-                        console.log($scope.issues);
                     });
                 //TODO error
 
