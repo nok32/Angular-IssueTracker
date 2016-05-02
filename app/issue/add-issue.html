@@ -1,44 +1,45 @@
-<div class="row">
-    <div main-menu></div>
-    <form name="AddIssueForm">
-        <h1>Hello from add Issue</h1>
-        <p>
-            <label>Title</label>
-            <input type="text" ng-model="issue.Title">
-        </p>
-        <p>
-            <label>Description</label>
-            <textarea type="text" ng-model="issue.Description"></textarea>
-        </p>
-        <p>
-            <label>Projects</label>
-            <!--TODO to work with normal add issue-->
-            <!--<select ng-options="project.Name for project in dataProjects track by project.Id" ng-model="issue.Project"></select>-->
-            <select ng-model="issue.Project">
-                <option value="{{projectCurrent}}">{{projectCurrent.Name}}</option>
-            </select>
-        </p>
-        <p>
-            <label>Priority</label>
-            <select ng-model="issue.Priority">
-                <option ng-repeat="priority in projectCurrent.Priorities" value="{{priority}}">{{priority.Name}}</option>
-            </select>
-        </p>
-        <p>
-            <label>Label</label>
-            <input ng-model="issue.Label" list="labels" ng-model="issue.Label"  autocomplete="on" />
-            <datalist id="labels">
-                <option ng-repeat="label in projectLabels" value="{{label.Name}}"></option>
-            </datalist>
-        </p>
-        <p>
-            <label>Assignee</label>
-            <select ng-options="user.Username for user in dataUsers track by user.Id" ng-model="issue.Assignee"></select>
-        </p>
-        <p>
-            <label>DueDate</label>
-            <input ng-model="issue.DueDate" type="date">
-        </p>
-        <a ng-click="addIssue(issue)" class="btn btn-success">Add Issue</a>
-    </form>
-</div>
+<div ng-if="isAuthenticated || redirect()" class="row">
+    <div class="row">
+        <div main-menu></div>
+        <form name="AddIssueForm">
+            <h1>Hello from add Issue</h1>
+            <p>
+                <label>Title</label>
+                <input type="text" ng-model="issueToAdding.Title">
+            </p>
+            <p>
+                <label>Description</label>
+                <textarea type="text" ng-model="issueToAdding.Description"></textarea>
+            </p>
+            <p>
+                <label>Projects</label>
+                <!--TODO to work with normal add issue-->
+                <!--<select ng-options="project.Name for project in dataProjects track by project.Id" ng-model="issue.Project"></select>-->
+                <select ng-model="issueToAdding.Project">
+                    <option value="{{projectCurrent}}">{{projectCurrent.Name}}</option>
+                </select>
+            </p>
+            <p>
+                <label>Priority</label>
+                <select ng-model="issueToAdding.Priority">
+                    <option ng-repeat="priority in projectCurrent.Priorities" value="{{priority}}">{{priority.Name}}</option>
+                </select>
+            </p>
+            <p>
+                <label>Label</label>
+                <input ng-model="issueToAdding.Label" list="labels" ng-model="issueToAdding.Label"  autocomplete="on" />
+                <datalist id="labels">
+                    <option ng-repeat="label in projectLabels" value="{{label.Name}}"></option>
+                </datalist>
+            </p>
+            <p>
+                <label>Assignee</label>
+                <select ng-options="user.Username for user in dataUsers track by user.Id" ng-model="issueToAdding.Assignee"></select>
+            </p>
+            <p>
+                <label>DueDate</label>
+                <input ng-model="issueToAdding.DueDate" type="datetime-local">
+            </p>
+            <a ng-click="addIssue(issueToAdding)" class="btn btn-success">Add Issue</a>
+        </form>
+    </div>

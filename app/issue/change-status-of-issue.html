@@ -1,0 +1,8 @@
+<p>
+    Available statuses:
+<ul>
+    <li ng-repeat="issueStatuses in issue.AvailableStatuses">
+        ----{{issueStatuses.Name}}<button class="btn btn-success" ng-click="issueChangeStatus(issue.Id, issueStatuses.Id)">Change</button>
+    </li>
+</ul>
+</p>

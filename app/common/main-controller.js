@@ -32,9 +32,24 @@ angular.module('IssueTracker.main', [])
             return deferred.promise;
         };
 
+        function put(url, data, header){
+            var deferred = $q.defer();
+
+            $http.put(BASE_URL + url, data, header)
+                .success(function(responce){
+                    deferred.resolve(responce);
+                })
+                .error(function(error){
+                    deferred.reject(error);
+                });
+
+            return deferred.promise;
+        }
+
         return {
             post: post,
-            get: get
+            get: get,
+            put: put
         };
     }])
 

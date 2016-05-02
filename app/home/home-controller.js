@@ -26,9 +26,10 @@ angular.module('IssueTracker.home', [])
     .controller('HomeController', [
         '$scope',
         '$location',
-        'requester',
         'identity',
-        function($scope, $location, requester,identity){
+        'issue',
+        'projects',
+        function($scope, $location, identity, issue, projects){
 
             $scope.isAuthenticated = identity.isAuthenticated();
 
@@ -40,22 +41,36 @@ angular.module('IssueTracker.home', [])
                 $location.path('/user/login');
             };
 
-            $scope.getMyIssues = function(pageSize, pageNumber, orderByType){
-                var url = 'Issues/me?pageSize=' + pageSize +'&pageNumber=' + pageNumber + '&orderBy=' + orderByType;
-
-                requester.get(url, identity.getHeaderWithToken())
+            $scope.getMyIssues = function(pageSize, page, sorter){
+                issue.getMyIssues(pageSize, page, sorter)
                     .then(function(success){
                         $scope.issues = success;
                         $scope.pages = [];
                         for (var i = 0; i <  $scope.issues.TotalPages; i++) {
                             $scope.pages.push(i + 1);
                         }
+                        console.log($scope.issues);
+                    }, function(error){
+                        //TODO
                     });
-                //TODO error
+            };
 
+            $scope.getMyProjects = function(pageSize, page, filter){
+                projects.getMyProjects(pageSize, page, filter)
+                    .then(function(success){
+                        $scope.projects = success;
+                        $scope.projectsPages = [];
+                        for (var i = 0; i <  $scope.projects.TotalPages; i++) {
+                            $scope.projectsPages.push(i + 1);
+                        }
+                    }, function(error){
+                        console.log(error);
+                    });
             };
 
             if (angular.isDefined(identity.getToken())) {
                 $scope.getMyIssues(5, 1, 'DueDate desc');
+                $scope.projectsFilter = 'Lead.Id=' + '"' + identity.getId() + '"';
+                $scope.getMyProjects(5, 1, $scope.projectsFilter);
             }
         }]);

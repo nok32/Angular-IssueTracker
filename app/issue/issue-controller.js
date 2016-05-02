@@ -20,21 +20,101 @@ angular.module('IssueTracker.issue', [])
             return requester.get(url, identity.getHeaderWithToken());
         }
 
+        function getMyIssues(pageSize, pageNumber, orderByType){
+            var url = 'Issues/me?pageSize=' + pageSize +'&pageNumber=' + pageNumber + '&orderBy=' + orderByType;
+
+            return requester.get(url, identity.getHeaderWithToken());
+        }
+
+        function getProjectIssues(id){
+            var url = 'Projects/' + id + '/Issues';
+
+            return requester.get(url, identity.getHeaderWithToken());
+        }
+
+        function addNewIssue(data){
+            var url = 'Issues/';
+
+            return requester.post(url, data, identity.getHeaderWithToken());
+        }
+
+        function issueChangeStatus(id, statusId){
+            var url = 'Issues/' + id + '/changestatus?statusid=' + statusId;
+
+            return requester.put(url, undefined,identity.getHeaderWithToken());
+        }
+
         return{
-            getIssueById : getIssueById
+            getIssueById : getIssueById,
+            getMyIssues : getMyIssues,
+            getProjectIssues: getProjectIssues,
+            addNewIssue: addNewIssue,
+            issueChangeStatus: issueChangeStatus
         };
     }])
+
+    .directive('changeStatus', function() {
+        return {
+            restrict: 'A',
+            templateUrl: 'app/issue/change-status-of-issue.html'
+        }
+    })
+
+    .directive('issueProjectLeader', function() {
+        return {
+            restrict: 'A',
+            templateUrl: 'app/issue/issue-project-leader.html'
+        }
+    })
 
     .controller('IssueController', [
         '$scope',
         '$routeParams',
         'identity',
-        'requester',
         'users',
         'projects',
         'issue',
-        function($scope, $routeParams, identity, requester, users, projects, issue){
-            
+        function($scope, $routeParams, identity, users, projects, issue){
+
+            $scope.isAuthenticated = identity.isAuthenticated();
+            $scope.redirect = function(){
+                projects.redirect();
+            };
+
+            $scope.isCurrentUserAssignee = function(issue){
+                if(issue.Assignee.Id === identity.getId()){
+                    $scope.isAssignee = true;
+                }else{
+                    $scope.isAssignee = false;
+                }
+            };
+
+            $scope.issueChangeStatus = function(id, statusId){
+                issue.issueChangeStatus(id, statusId)
+                    .then(function(success){
+                        console.log(success);
+                        issue.getIssueById(id)
+                            .then(function(success){
+                                $scope.issue = success;
+                                $scope.isCurrentUserAssignee($scope.issue);
+                                projects.getProjectById($scope.issue.Project.Id)
+                                    .then(function(success){
+                                        $scope.project = success;
+                                        if(identity.isCurrentUserProjectLeader($scope.project) || identity.isAdmin()){
+                                            $scope.isCurentUserAdminOrProjectLeader = true;
+                                        }else{
+                                            $scope.isCurentUserAdminOrProjectLeader = false;
+                                        }
+                                    }, function (error) {
+                                        console.log(error);
+                                    })
+                            })
+
+                    }, function(error){
+                        console.log(error);
+                    })
+            }
+
             if($routeParams.add) {
                 $scope.isInIssueAdd = true;
                 $scope.projectId = $routeParams.id;
@@ -64,31 +144,41 @@ angular.module('IssueTracker.issue', [])
                 issue.getIssueById($routeParams.id)
                     .then(function(success){
                         $scope.issue = success;
-                        console.log($scope.issue);
+                        $scope.isCurrentUserAssignee($scope.issue);
+                        projects.getProjectById($scope.issue.Project.Id)
+                            .then(function(success){
+                                $scope.project = success;
+                                if(identity.isCurrentUserProjectLeader($scope.project) || identity.isAdmin()){
+                                    $scope.isCurentUserAdminOrProjectLeader = true;
+                                }else{
+                                    $scope.isCurentUserAdminOrProjectLeader = false;
+                                }
+
+                            }, function (error) {
+                                console.log(error);
+                            })
                     })
             }
 
 
-            $scope.addIssue = function(issue){
+            $scope.addIssue = function(issueToAdding){
                 var data = {
-                    Title: issue.Title,
-                    Description: issue.Description,
-                    DueDate: issue.DueDate,
-                    ProjectId: JSON.parse(issue.Project).Id,
-                    AssigneeId: issue.Assignee.Id,
-                    PriorityId: JSON.parse(issue.Priority).Id,
+                    Title: issueToAdding.Title,
+                    Description: issueToAdding.Description,
+                    DueDate: issueToAdding.DueDate,
+                    ProjectId: JSON.parse(issueToAdding.Project).Id,
+                    AssigneeId: issueToAdding.Assignee.Id,
+                    PriorityId: JSON.parse(issueToAdding.Priority).Id,
                     Labels: []
                 };
 
                 var label = {
-                    Name:issue.Label
+                    Name:issueToAdding.Label
                 };
 
                 data.Labels.push(label);
 
-                var url = 'Issues/';
-
-                requester.post(url, data, identity.getHeaderWithToken())
+                issue.addNewIssue(data)
                     .then(function(success){
                         console.log(success);
                     }, function(error){

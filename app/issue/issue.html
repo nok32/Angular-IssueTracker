@@ -1,0 +1,35 @@
+<div class="row">
+    <div main-menu></div>
+    <div class="col-md-6">
+        <h4>{{issue.IssueKey}}<div style="display: inline-block" issue-project-leader ng-show="isCurentUserAdminOrProjectLeader"></div></h4>
+        <p>
+            <label>Title</label>
+            <input ng-model="issue.Title"  value="issue.Title">
+        </p>
+        <p>
+            <label>Description</label>
+            <textarea ng-model="issue.Description" value="issue.Description"></textarea>
+        </p>
+        <p>
+            <label>AssigneeId</label>
+            <span>(current id: {{issue.Assignee.Id}})</span>
+            <input ng-model="issue.Assignee.Username" value="issue.Assignee.Username">
+        </p>
+        <p>
+            <label>PriorityId</label>
+            <span>(current id: {{issue.Priority.Id}})</span>
+            <input ng-model="issue.Priority.Name" value="issue.Priority.Name">
+        </p>
+        <p>
+            <label>DueDate</label>
+            <input ng-model="issue.DueDate" type="text" value="{{issue.DueDate}}">
+        </p>
+        <p>Author: {{issue.Author.Username}}</p>
+        <p>Project: {{issue.Project.Name}}</p>
+        <p>Status: {{issue.Status.Name}}</p>
+        <p>Labels: <span ng-repeat="label in issue.Labels">{{label.Name}}, </span> </p>
+    </div>
+    <div class="col-md-6">
+        <div change-status ng-if="isCurentUserAdminOrProjectLeader || isAssignee"></div>
+    </div>
+</div>

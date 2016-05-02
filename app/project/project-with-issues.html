@@ -1,0 +1,51 @@
+<div ng-if="isAuthenticated || redirect()" class="row">
+    <div main-menu></div>
+    <div class="col-md-6">
+        <h4>{{project.ProjectKey}}<div style="display: inline-block" project-leader ng-show="isCurrentUserProjectTeamLeaderOrAdmin()"></div></h4>
+        <p>Project key: {{project.ProjectKey}}</p>
+        <p>
+            <label>Name</label>
+            <input ng-model="project.Name">
+        </p>
+        <p>
+            <label>Description</label>
+            <input ng-model="project.Description">
+        </p>
+        <p>
+            <label>LeadId</label>
+            <span>({{project.Lead.Id}})</span>
+            <input ng-model="project.Lead.Username">
+        </p>
+        <p>Labels:
+            <span ng-repeat="label in project.Labels"> {{label.Name}},</span>
+        </p>
+        <p>Priorities:
+            <span ng-repeat="priority in project.Priorities"> {{priority.Name}},</span>
+        </p>
+    </div>
+    <div class="col-md-6">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Due Date</th>
+                    <th>Assignee</th>
+                </tr>
+                </thead>
+                <tr ng-repeat="issue in issues | orderBy: '-DueDate' : reverse">
+                    <td><a ng-href="#/issues/{{issue.Id}}">{{issue.Title}}</a></td>
+                    <td>{{issue.Description}}</td>
+                    <td>{{issue.DueDate}}</td>
+                    <td>{{issue.Assignee.Username}}</td>
+                </tr>
+            </table>
+            <ul class="pagination">
+                <ul class="pagination">
+                    <li ng-repeat="page in pages" ><a href="#/" ng-click="getMyIssues(5,  page, 'DueDate desc')" value="{{page}}">{{page}}<span class="sr-only">(current)</span></a></li>
+                </ul>
+            </ul>
+        </div>
+    </div>
+</div>

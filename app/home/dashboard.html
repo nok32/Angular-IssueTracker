@@ -4,22 +4,32 @@
         <br />
         <h1>Dashboard</h1>
         <h1>Affiliated Projects</h1>
-        <a>entirely</a>
-        <a>new project</a>
+        <ul>
+            <li ng-repeat="project in projects.Projects"><a ng-href="#/projects/{{project.Id}}"><h3>{{project.Name}}</h3></a></li>
+        </ul>
+        <ul class="pagination">
+            <ul class="pagination">
+                <li ng-repeat="projectPage in projectsPages">
+                    <a href="#/" ng-click="getMyProjects(5,  projectPage, projectsFilter)" value="{{projectPage}}">{{projectPage}}
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+            </ul>
+        </ul>
     </div>
     <div class="col-md-6">
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Project</th>
-                        <th>Due Date</th>
-                    </tr>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Project</th>
+                    <th>Due Date</th>
+                </tr>
                 </thead>
                 <tr ng-repeat="issue in issues.Issues | orderBy: '-DueDate' : reverse">
-                    <td>{{issue.Title}}</td>
+                    <td><a ng-href="#/issues/{{issue.Id}}">{{issue.Title}}</a></td>
                     <td>{{issue.Description}}</td>
                     <td>{{issue.Project.Name}}</td>
                     <td>{{issue.DueDate}}</td>
