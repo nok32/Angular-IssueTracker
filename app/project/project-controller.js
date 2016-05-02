@@ -15,9 +15,16 @@ angular.module('IssueTracker.project', [])
 
     .factory('projects', ['$q','requester', 'identity', function($q, requester, identity){
         function getProjects(){
-            var url = 'Projects/?pageSize=100&pageNumber=1&{filter}=null';
+            var userId = identity.getId();
+            var url = 'Projects/?pageSize=100&pageNumber=1&filterS';
 
              return requester.get(url, identity.getHeaderWithToken())
+        };
+
+        function getMyProjects(pageSize, page, filter) {
+            var url = 'Projects/?pageSize=' + pageSize +'&pageNumber=' + page +'&filter=' + filter;
+
+            return requester.get(url, identity.getHeaderWithToken());
         };
 
         function getProjectById(id){
@@ -28,7 +35,8 @@ angular.module('IssueTracker.project', [])
 
         return {
             getProjects: getProjects,
-            getProjectById: getProjectById
+            getProjectById: getProjectById,
+            getMyProjects: getMyProjects
         };
     }])
 
@@ -73,7 +81,7 @@ angular.module('IssueTracker.project', [])
                 projects.getProjects()
                     .then(function(responce){
                         $scope.projects = responce;
-                    })
+                    });
 
                 if ($routeParams.id) {
                     projects.getProjectById($routeParams.id)

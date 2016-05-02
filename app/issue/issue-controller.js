@@ -18,10 +18,17 @@ angular.module('IssueTracker.issue', [])
             var url = 'Issues/' + id;
 
             return requester.get(url, identity.getHeaderWithToken());
-        }
+        };
+
+        function getMyIssues(pageSize, pageNumber, orderByType){
+            var url = 'Issues/me?pageSize=' + pageSize +'&pageNumber=' + pageNumber + '&orderBy=' + orderByType;
+
+            return requester.get(url, identity.getHeaderWithToken());
+        };
 
         return{
-            getIssueById : getIssueById
+            getIssueById : getIssueById,
+            getMyIssues : getMyIssues
         };
     }])
 
@@ -69,7 +76,7 @@ angular.module('IssueTracker.issue', [])
             }
 
 
-            $scope.addIssue = function(issue){
+            $scope.addIssue = function(issueToAdding){
                 var data = {
                     Title: issue.Title,
                     Description: issue.Description,

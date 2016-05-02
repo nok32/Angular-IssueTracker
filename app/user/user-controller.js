@@ -90,14 +90,13 @@ angular.module('IssueTracker.user', [])
                             .then(function(currentUser){
                                 user.Id = currentUser.Id;
                                 user.IsAdmin = currentUser.isAdmin;
+                                user.Username = success.userName;
+                                user.Token = success.access_token;
+
+                                identity.setIdentity(user);
+
+                                $location.path('/alabala');
                             });
-
-                        user.Username = success.userName;
-                        user.Token = success.access_token;
-
-                        identity.setIdentity(user);
-
-                        $location.path('/alabala');
 
                     },function(error){
                         console.log(error);

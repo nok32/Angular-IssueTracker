@@ -2,15 +2,15 @@
 angular.module('IssueTracker.identifier', [])
 
 
-    .factory('identity', ['$rootScope', function($rootScope){
+    .factory('identity', [function(){
         function getToken() {
-            if($rootScope.identity){
-                return $rootScope.identity.Token;
+            if(localStorage.getItem('identity')){
+                return JSON.parse(localStorage.getItem('identity')).Token;
             }
         };
 
         function getHeaderWithToken(){
-            if($rootScope.identity){
+            if(localStorage.getItem('identity')){
                 var header = {
                     headers:{
                         Authorization: 'Bearer ' + getToken()
@@ -22,34 +22,34 @@ angular.module('IssueTracker.identifier', [])
         }
 
         function isAdmin(){
-            return $rootScope.identity.IsAdmin;
+            return JSON.parse(localStorage.getItem('identity')).IsAdmin;
         }
 
         function getUsername() {
-            if ($rootScope.identity) {
-                return $rootScope.identity.Username;
+            if (localStorage.identity) {
+                return JSON.parse(localStorage.getItem('identity')).Username;
             }
         };
 
         function getId(){
-            if ($rootScope.identity) {
-                return $rootScope.identity.Id;
+            if (localStorage.identity) {
+                return JSON.parse(localStorage.getItem('identity')).Id;
             }
         }
 
         function setIdentity(user) {
-            $rootScope.identity = user;
+            localStorage.setItem('identity', JSON.stringify(user));
         };
 
         function isAuthenticated(){
-            if ($rootScope.identity !== undefined) {
+            if (localStorage.identity) {
                 return true;
             }
             return false;
         }
 
         function logout(){
-            $rootScope.identity = undefined;
+            localStorage.removeItem('identity');
         }
 
         return {
