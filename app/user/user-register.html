@@ -5,7 +5,7 @@
         <form name="userFormRegister" novalidate>
             <fieldset>
                 <legend>Register Form</legend>
-            <!-- EMAIL -->
+                <!-- EMAIL -->
                 <div class="form-group" ng-class="{ 'has-error' : userFormRegister.email.$invalid && !userFormRegister.email.$pristine }">
                     <label>Email</label>
                     <input type="email" name="email" class="form-control" ng-model="user.email" required>
