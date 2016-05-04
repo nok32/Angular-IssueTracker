@@ -23,7 +23,7 @@ angular.module('IssueTracker.project', [])
 
             return requester.get(url, identity.getHeaderWithToken())
         };
-        
+
         function getMyProjects(pageSize, page, filter) {
             var url = 'Projects/?pageSize=' + pageSize +'&pageNumber=' + page +'&filter=' + filter;
 

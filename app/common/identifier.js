@@ -1,8 +1,7 @@
 'use strict'
 angular.module('IssueTracker.identifier', [])
 
-
-    .factory('identity', [function(){
+    .factory('identity', ['requester', function(requester){
         function getToken() {
             if(localStorage.getItem('identity')){
                 return JSON.parse(localStorage.getItem('identity')).Token;
@@ -44,8 +43,9 @@ angular.module('IssueTracker.identifier', [])
         function isAuthenticated(){
             if (localStorage.identity) {
                 return true;
+            }else{
+                return false;
             }
-            return false;
         }
 
         function isCurrentUserProjectLeader(project){

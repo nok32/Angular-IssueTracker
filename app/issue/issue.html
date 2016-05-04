@@ -1,22 +1,15 @@
 <div class="row">
     <div main-menu></div>
     <div class="col-md-6">
-<<<<<<< HEAD
         <h4>{{issue.IssueKey}}<div style="display: inline-block" issue-project-leader ng-show="isCurentUserAdminOrProjectLeader"></div></h4>
-=======
-        <h4>{{issue.IssueKey}}<div style="display: inline-block" project-leader ng-show="isCurrentUserProjectTeamLeaderOrAdmin()"></div></h4>
->>>>>>> remotes/origin/master
         <p>
             <label>Title</label>
             <input ng-model="issue.Title"  value="issue.Title">
         </p>
         <p>
             <label>Description</label>
-<<<<<<< HEAD
             <textarea ng-model="issue.Description" value="issue.Description"></textarea>
-=======
             <input ng-model="issue.Description" value="issue.Description">
->>>>>>> remotes/origin/master
         </p>
         <p>
             <label>AssigneeId</label>
@@ -37,10 +30,7 @@
         <p>Status: {{issue.Status.Name}}</p>
         <p>Labels: <span ng-repeat="label in issue.Labels">{{label.Name}}, </span> </p>
     </div>
-<<<<<<< HEAD
     <div class="col-md-6">
         <div change-status ng-if="isCurentUserAdminOrProjectLeader || isAssignee"></div>
     </div>
-=======
->>>>>>> remotes/origin/master
 </div>

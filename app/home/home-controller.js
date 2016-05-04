@@ -29,7 +29,9 @@ angular.module('IssueTracker.home', [])
         'identity',
         'issue',
         'projects',
-        function($scope, $location, requester, identity, issue, projects){
+        function($scope, $location, identity, issue, projects){
+
+            console.log(identity.getToken());
 
             $scope.isAuthenticated = identity.isAuthenticated();
 

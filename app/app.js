@@ -5,6 +5,7 @@ angular.module('IssueTracker', [
     'ngRoute',
     'IssueTracker.view1',
     'IssueTracker.identifier',
+    'IssueTracker.label',
     'IssueTracker.issue',
     'IssueTracker.main',
     'IssueTracker.user',

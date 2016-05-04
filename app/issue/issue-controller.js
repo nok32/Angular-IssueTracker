@@ -11,17 +11,15 @@ angular.module('IssueTracker.issue', [])
             templateUrl: 'app/issue/issue.html',
             controller: 'IssueController'
         });
+        $routeProvider.when('/issues/:id/edit', {
+            templateUrl: 'app/issue/edit-issue.html',
+            controller: 'IssueController'
+        });
     }])
 
     .factory('issue', ['requester', 'identity', function(requester, identity){
         function getIssueById(id){
             var url = 'Issues/' + id;
-
-            return requester.get(url, identity.getHeaderWithToken());
-        };
-
-        function getMyIssues(pageSize, pageNumber, orderByType){
-            var url = 'Issues/me?pageSize=' + pageSize +'&pageNumber=' + pageNumber + '&orderBy=' + orderByType;
 
             return requester.get(url, identity.getHeaderWithToken());
         };
@@ -50,16 +48,19 @@ angular.module('IssueTracker.issue', [])
             return requester.put(url, undefined,identity.getHeaderWithToken());
         }
 
+        function editIssue(id, data){
+            var url = 'Issues/' + id;
+
+            return requester.put(url, data, identity.getHeaderWithToken());
+        }
+
         return{
             getIssueById : getIssueById,
-<<<<<<< HEAD
             getMyIssues : getMyIssues,
             getProjectIssues: getProjectIssues,
             addNewIssue: addNewIssue,
-            issueChangeStatus: issueChangeStatus
-=======
-            getMyIssues : getMyIssues
->>>>>>> remotes/origin/master
+            issueChangeStatus: issueChangeStatus,
+            editIssue: editIssue
         };
     }])
 
@@ -84,9 +85,11 @@ angular.module('IssueTracker.issue', [])
         'users',
         'projects',
         'issue',
-        function($scope, $routeParams, identity, users, projects, issue){
+        'label',
+        function($scope, $routeParams, identity, users, projects, issue, label){
 
             $scope.isAuthenticated = identity.isAuthenticated();
+
             $scope.redirect = function(){
                 projects.redirect();
             };
@@ -102,7 +105,6 @@ angular.module('IssueTracker.issue', [])
             $scope.issueChangeStatus = function(id, statusId){
                 issue.issueChangeStatus(id, statusId)
                     .then(function(success){
-                        console.log(success);
                         issue.getIssueById(id)
                             .then(function(success){
                                 $scope.issue = success;
@@ -119,15 +121,60 @@ angular.module('IssueTracker.issue', [])
                                         console.log(error);
                                     })
                             })
-
                     }, function(error){
                         console.log(error);
                     })
             }
 
+            $scope.getExistingLabels = function(){
+                label.getLabels()
+                    .then(function(success){
+                        $scope.existingLabels = success;
+                    }, function(error){
+                        console.log(error);
+                    })
+            };
+
+            $scope.preparingIssueForDataBase = function(issueData){
+                var data = {
+                    Title: issueData.Title,
+                    Description: issueData.Description,
+                    DueDate: issueData.DueDate,
+                    ProjectId: JSON.parse(issueData.Project).Id,
+                    AssigneeId: issueData.Assignee.Id,
+                    PriorityId: JSON.parse(issueData.Priority).Id,
+                    Labels: []
+                };
+
+                var labels = issueData.Label.split(',');
+
+                for (var i = 0; i < labels.length; i++) {
+                    var exist = false;
+                    for (var j = 0; j < $scope.existingLabels.length; j++) {
+                        if($scope.existingLabels[j].Name === labels[i].Name){
+                            exist = true;
+                            data.Labels.push($scope.existingLabels[j]);
+                            break;
+                        }
+                    }
+
+                    if(!exist){
+                        var label = {
+                            Name: labels[i]
+                        };
+
+                        data.Labels.push(label);
+                    }
+                }
+
+                return data;
+            }
+
             if($routeParams.add) {
                 $scope.isInIssueAdd = true;
                 $scope.projectId = $routeParams.id;
+
+                $scope.getExistingLabels();
 
                 users.getUsers()
                     .then(function(responce){
@@ -142,15 +189,22 @@ angular.module('IssueTracker.issue', [])
                 projects.getProjectById($scope.projectId)
                     .then(function(responce){
                         $scope.projectCurrent = responce;
-                        var projectLabels = []
-                        $scope.projectCurrent.Labels.forEach(function(a){
-                            projectLabels.push(a);
-                        });
-                        $scope.projectLabels = projectLabels
                     });
             }
 
             if($routeParams.id) {
+                users.getUsers()
+                    .then(function(responce){
+                        $scope.dataUsers = responce;
+                    });
+
+                projects.getProjects()
+                    .then(function(responce){
+                        $scope.dataProjects = responce;
+                    });
+                
+                $scope.getExistingLabels();
+
                 issue.getIssueById($routeParams.id)
                     .then(function(success){
                         $scope.issue = success;
@@ -163,30 +217,17 @@ angular.module('IssueTracker.issue', [])
                                 }else{
                                     $scope.isCurentUserAdminOrProjectLeader = false;
                                 }
+                                $scope.issueToEdit = $scope.issue;
 
                             }, function (error) {
                                 console.log(error);
                             })
-                    })
+                    });
             }
 
-
             $scope.addIssue = function(issueToAdding){
-                var data = {
-                    Title: issueToAdding.Title,
-                    Description: issueToAdding.Description,
-                    DueDate: issueToAdding.DueDate,
-                    ProjectId: JSON.parse(issueToAdding.Project).Id,
-                    AssigneeId: issueToAdding.Assignee.Id,
-                    PriorityId: JSON.parse(issueToAdding.Priority).Id,
-                    Labels: []
-                };
 
-                var label = {
-                    Name:issueToAdding.Label
-                };
-
-                data.Labels.push(label);
+                var data = $scope.preparingIssueForDataBase(issueToAdding);
 
                 issue.addNewIssue(data)
                     .then(function(success){
@@ -194,8 +235,18 @@ angular.module('IssueTracker.issue', [])
                     }, function(error){
                         console.log(error);
                     });
+            };
 
-                //TODO
+            $scope.editIssue = function(id, issueWithEditedData){
+
+                var data = $scope.preparingIssueForDataBase(issueWithEditedData);
+
+                issue.editIssue(id, data)
+                    .then(function(success){
+                        console.log(success);
+                    }, function(error) {
+                        console.log(error);
+                    })
             }
         }
     ]);
