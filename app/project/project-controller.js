@@ -19,22 +19,11 @@ angular.module('IssueTracker.project', [])
 
     .factory('projects', ['$q','requester', 'identity', function($q, requester, identity){
         function getProjects(){
-<<<<<<< HEAD
             var url = 'Projects/?pageSize=100&pageNumber=1&filterS';
 
             return requester.get(url, identity.getHeaderWithToken())
         };
-
-        function getMyProjects(pageSize, page, filter) {
-            var url = 'Projects/?pageSize=' + pageSize +'&pageNumber=' + page +'&filter=' + filter;
-=======
-            var userId = identity.getId();
-            var url = 'Projects/?pageSize=100&pageNumber=1&filterS';
->>>>>>> remotes/origin/master
-
-            return requester.get(url, identity.getHeaderWithToken());
-        };
-
+        
         function getMyProjects(pageSize, page, filter) {
             var url = 'Projects/?pageSize=' + pageSize +'&pageNumber=' + page +'&filter=' + filter;
 
@@ -56,12 +45,8 @@ angular.module('IssueTracker.project', [])
         return {
             getProjects: getProjects,
             getProjectById: getProjectById,
-<<<<<<< HEAD
             getMyProjects: getMyProjects,
             editProject: editProject
-=======
-            getMyProjects: getMyProjects
->>>>>>> remotes/origin/master
         };
     }])
 
