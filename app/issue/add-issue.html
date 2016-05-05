@@ -14,8 +14,8 @@
             <p>
                 <label>Projects</label>
                 <!--TODO to work with normal add issue-->
-                <!--<select ng-options="project.Name for project in dataProjects track by project.Id" ng-model="issue.Project"></select>-->
-                <select ng-model="issueToAdding.Project">
+                <!--<select ng-options="project.Name for project in projectCurrent track by project.Id" ng-model="issue.Project"></select>-->
+                <select ng-model="issueToAdding.Project" convert>
                     <option value="{{projectCurrent}}">{{projectCurrent.Name}}</option>
                 </select>
             </p>

@@ -88,6 +88,15 @@ angular.module('IssueTracker.issue', [])
         'label',
         function($scope, $routeParams, identity, users, projects, issue, label){
 
+            $scope.convertToJSON = function convertToJSON(obj) {
+                try {
+                    JSON.parse(obj);
+                } catch (e) {
+                    return obj
+                }
+                return JSON.parse(obj);
+            };
+
             $scope.isAuthenticated = identity.isAuthenticated();
 
             $scope.redirect = function(){
@@ -136,38 +145,41 @@ angular.module('IssueTracker.issue', [])
             };
 
             $scope.preparingIssueForDataBase = function(issueData){
-                var data = {
-                    Title: issueData.Title,
-                    Description: issueData.Description,
-                    DueDate: issueData.DueDate,
-                    ProjectId: JSON.parse(issueData.Project).Id,
-                    AssigneeId: issueData.Assignee.Id,
-                    PriorityId: JSON.parse(issueData.Priority).Id,
-                    Labels: []
-                };
+                    issueData.Project = $scope.convertToJSON(issueData.Project);
+                    issueData.Priority = $scope.convertToJSON(issueData.Priority);
 
-                var labels = issueData.Label.split(',');
+                    var data = {
+                        Title: issueData.Title,
+                        Description: issueData.Description,
+                        DueDate: issueData.DueDate,
+                        ProjectId: issueData.Project.Id,
+                        AssigneeId: issueData.Assignee.Id,
+                        PriorityId: issueData.Priority.Id,
+                        Labels: []
+                    };
 
-                for (var i = 0; i < labels.length; i++) {
-                    var exist = false;
-                    for (var j = 0; j < $scope.existingLabels.length; j++) {
-                        if($scope.existingLabels[j].Name === labels[i].Name){
-                            exist = true;
-                            data.Labels.push($scope.existingLabels[j]);
-                            break;
+                    var labels = issueData.Label.split(',');
+
+                    for (var i = 0; i < labels.length; i++) {
+                        var exist = false;
+                        for (var j = 0; j < $scope.existingLabels.length; j++) {
+                            if ($scope.existingLabels[j].Name === labels[i].Name) {
+                                exist = true;
+                                data.Labels.push($scope.existingLabels[j]);
+                                break;
+                            }
+                        }
+
+                        if (!exist) {
+                            var label = {
+                                Name: labels[i]
+                            };
+
+                            data.Labels.push(label);
                         }
                     }
 
-                    if(!exist){
-                        var label = {
-                            Name: labels[i]
-                        };
-
-                        data.Labels.push(label);
-                    }
-                }
-
-                return data;
+                    return data;
             }
 
             if($routeParams.add) {
@@ -189,6 +201,7 @@ angular.module('IssueTracker.issue', [])
                 projects.getProjectById($scope.projectId)
                     .then(function(responce){
                         $scope.projectCurrent = responce;
+                        console.log($scope.projectCurrent);
                     });
             }
 

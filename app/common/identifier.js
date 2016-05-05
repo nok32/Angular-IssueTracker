@@ -1,7 +1,7 @@
 'use strict'
 angular.module('IssueTracker.identifier', [])
 
-    .factory('identity', ['requester', function(requester){
+    .factory('identity', [function(){
         function getToken() {
             if(localStorage.getItem('identity')){
                 return JSON.parse(localStorage.getItem('identity')).Token;

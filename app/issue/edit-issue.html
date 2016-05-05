@@ -1,46 +1,48 @@
-<div ng-if="isAuthenticated || redirect()" class="row">
+<div ng-if="isAuthenticated || isAssignee || redirect()" class="row">
     <div class="row">
         <div main-menu></div>
-        <form name="EditIssueForm">
-            <h1>Hello from add Issue</h1>
-            <p>
-                <label>Title</label>
-                <input type="text" ng-model="issueToEdit.Title">
-            </p>
-            <p>
-                <label>Description</label>
-                <textarea type="text" ng-model="issueToEdit.Description"></textarea>
-            </p>
-            <p>
-                <label>Projects</label>
-                <!--TODO to work with normal add issue-->
-                <select ng-options="project.Name for project in dataProjects track by project.Id" ng-model="issueToEdit.Project"></select>
-                <!--<select ng-model="issueToEdit.Project">
-                    <option value="{{projectCurrent}}">{{projectCurrent.Name}}</option>
-                </select>-->
-            </p>
-            <p>
-                <label>Priority</label>
-                <select ng-model="issueToEdit.Priority">
-                    <option ng-repeat="priority in issueToEdit.Project.Priorities" value="{{priority}}">{{priority.Name}}</option>
-                </select>
-            </p>
-            <p>
-                <label>Label</label>
-                <input list="labels-collection" ng-model="issueToEdit.Label"  autocomplete="on" />
-                <datalist id="labels-collection">
-                    <option ng-repeat="label in existingLabels" value="{{label.Name}}">{{label.Name}}</option>
-                </datalist>
-            </p>
-            <p>
-                <label>Assignee</label>
-                <select ng-options="user.Username for user in dataUsers track by user.Id" ng-model="issueToEdit.Assignee"></select>
-            </p>
-            <p>
-                <label>DueDate</label>
-                <input ng-model="issueToEdit.DueDate" type="datetime">
-            </p>
-            <a ng-click="editIssue(issueToEdit)" class="btn btn-success">Edit Issue</a>
-        </form>
+        <div class="col-md-6">
+            <form name="EditIssueForm">
+                <h1>Hello from add Issue</h1>
+                <p>
+                    <label>Title</label>
+                    <input type="text" ng-model="issueToEdit.Title">
+                </p>
+                <p>
+                    <label>Description</label>
+                    <textarea type="text" ng-model="issueToEdit.Description"></textarea>
+                </p>
+                <p>
+                    <label>Projects</label>
+                    <!--TODO to work with normal add issue-->
+                    <select ng-options="project.Name for project in dataProjects track by project.Id" ng-model="issueToEdit.Project"></select>
+                </p>
+                <p>
+                    <label>Priority</label>
+                    <select ng-model="issueToEdit.Priority">
+                        <option ng-repeat="priority in issueToEdit.Project.Priorities" value="{{priority}}">{{priority.Name}}</option>
+                    </select>
+                </p>
+                <p>
+                    <label>Label</label>
+                    <input list="labels-collection" ng-model="issueToEdit.Label"  autocomplete="on" />
+                    <datalist id="labels-collection">
+                        <option ng-repeat="label in existingLabels" value="{{label.Name}}">{{label.Name}}</option>
+                    </datalist>
+                </p>
+                <p>
+                    <label>Assignee</label>
+                    <select ng-options="user.Username for user in dataUsers track by user.Id" ng-model="issueToEdit.Assignee"></select>
+                </p>
+                <p>
+                    <label>DueDate</label>
+                    <input ng-model="issueToEdit.DueDate" type="datetime">
+                </p>
+                <a ng-if="isCurentUserAdminOrProjectLeader" ng-click="editIssue(issue.Id,issueToEdit)" class="btn btn-success">Edit Issue</a>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <div change-status ng-if="isAssignee || isCurentUserAdminOrProjectLeader"></div>
+        </div>
     </div>
 </div>
