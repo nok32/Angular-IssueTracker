@@ -202,7 +202,7 @@ angular.module('IssueTracker.issue', [])
                     .then(function(responce){
                         $scope.dataProjects = responce;
                     });
-                
+
                 $scope.getExistingLabels();
 
                 issue.getIssueById($routeParams.id)

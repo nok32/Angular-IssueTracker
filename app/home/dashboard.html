@@ -7,17 +7,6 @@
         <ul>
         <ul>
             <li ng-repeat="project in projects.Projects"><a ng-href="#/projects/{{project.Id}}"><h3>{{project.Name}}</h3></a></li>
-            <li ng-repeat="project in projects.Projects"><a><h3>{{project.Name}}</h3></a></li>
-        </ul>
-        <ul class="pagination">
-            <ul class="pagination">
-                <li ng-repeat="projectPage in projectsPages">
-                    <a href="#/" ng-click="getMyProjects(5,  projectPage, projectsFilter)" value="{{projectPage}}">{{projectPage}}
-                        <span class="sr-only">(current)</span>
-                    </a>
-                </li>
-            </ul>
-        </ul>
         </ul>
         <ul class="pagination">
             <ul class="pagination">
