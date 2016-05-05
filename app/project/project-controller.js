@@ -8,7 +8,7 @@ angular.module('IssueTracker.project', [])
             controller: 'ProjectController'
         });
         $routeProvider.when('/projects/:id/edit', {
-            templateUrl: 'app/project/project.html',
+            templateUrl: 'app/project/project-edit.html',
             controller: 'ProjectController'
         });
         $routeProvider.when('/projects', {
