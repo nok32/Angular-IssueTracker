@@ -102,6 +102,14 @@ angular.module('IssueTracker.issue', [])
 
             $scope.isAdmin = identity.isAdmin();
 
+            $scope.isTeamLeader = function(project){
+                if(identity.isCurrentUserProjectLeader(project)){
+                    return true;
+                }else{
+                    return false;
+                }
+            };
+
             $scope.redirect = function(){
                 $location.path('/home/home');
             };
@@ -212,6 +220,7 @@ angular.module('IssueTracker.issue', [])
                 project.getProjectById($scope.projectId)
                     .then(function(responce){
                         $scope.projectCurrent = responce;
+                        $scope.isTeamLeader = $scope.isTeamLeader($scope.projectCurrent);
                     });
             }
 

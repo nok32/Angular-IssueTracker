@@ -1,28 +1,26 @@
-<div ng-if="isCurrentUserAdminOrProjectLeader(project) || redirect()" class="row">
-    <div ng-if="isCurrentUserAdminOrProjectLeader(project)">
-        <div main-menu></div>
-        <div class="col-md-6">
-            <p>Project key: {{project.ProjectKey}}</p>
-            <p>
-                <label>Name</label>
-                <input ng-model="project.Name">
-            </p>
-            <p>
-                <label>Description</label>
-                <input ng-model="project.Description">
-            </p>
-            <p>
-                <label>LeadId</label>
-                <span>({{project.Lead.Id}})</span>
-                <input ng-model="project.Lead.Username">
-            </p>
-            <p>Labels:
-                <span ng-model="project.Labels" ng-repeat="label in project.Labels"> {{label.Name}},</span>
-            </p>
-            <p>Priorities:
-                <span ng-model="project.Priorities" ng-repeat="priority in project.Priorities"> {{priority.Name}},</span>
-            </p>
-            <button class="btn btn-success" ng-click="editProject(project)">Edit</button>
-        </div>
+<div ng-if="isAdmin || isTeamLeader || redirect()" class="row">
+    <div main-menu></div>
+    <div class="col-md-6">
+        <p>Project key: {{project.ProjectKey}}</p>
+        <p>
+            <label>Name</label>
+            <input ng-model="project.Name">
+        </p>
+        <p>
+            <label>Description</label>
+            <input ng-model="project.Description">
+        </p>
+        <p>
+            <label>LeadId</label>
+            <span>({{project.Lead.Id}})</span>
+            <input ng-model="project.Lead.Username">
+        </p>
+        <p>Labels:
+            <span ng-model="project.Labels" ng-repeat="label in project.Labels"> {{label.Name}},</span>
+        </p>
+        <p>Priorities:
+            <span ng-model="project.Priorities" ng-repeat="priority in project.Priorities"> {{priority.Name}},</span>
+        </p>
+        <button class="btn btn-success" ng-click="editProject(project)">Edit</button>
     </div>
 </div>

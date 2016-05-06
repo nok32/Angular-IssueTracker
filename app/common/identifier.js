@@ -52,7 +52,7 @@ angular.module('IssueTracker.identifier', [])
 
         function isCurrentUserProjectLeader(project){
             if(project){
-                if(project.Lead.Id === getId){
+                if(project.Lead.Id === getId()){
                     return true;
                 }else{
                     return false;

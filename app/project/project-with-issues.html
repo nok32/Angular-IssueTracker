@@ -1,7 +1,9 @@
 <div ng-if="isAuthenticated || redirect()" class="row">
     <div main-menu></div>
     <div class="col-md-6">
-        <h4>{{project.ProjectKey}}<div style="display: inline-block" project-leader ng-show="isCurrentUserAdminOrProjectLeader(project)"></div></h4>
+        <h4>{{project.ProjectKey}}
+            <div style="display: inline-block" project-leader ng-if="isTeamLeader || isAdmin"></div>
+        </h4>
         <p>Project key: {{project.ProjectKey}}</p>
         <p>
             <label>Name</label>

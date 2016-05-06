@@ -1,4 +1,4 @@
-<div class="row" ng-if="isAuthenticated || redirect()">
+<div class="row" ng-if="isAdmin || redirect()">
     <div main-menu></div>
     <div>
         <li ng-repeat="curentProject in projects"><h1>{{curentProject.Name}}<a class="btn btn-success" ng-href="#/projects/{{curentProject.Id}}">View</a></h1></li>
