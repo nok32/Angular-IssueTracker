@@ -49,6 +49,8 @@ angular.module('IssueTracker.user', [])
         'identity',
         function ($scope, $location, noty, requester, identity) {
 
+            $scope.isAdmin = identity.isAdmin();
+
             if(identity.isAuthenticated()){
                 $scope.isAuthenticated = true;
             }
@@ -149,7 +151,7 @@ angular.module('IssueTracker.user', [])
 
                     },function(error){
                         noty.showNoty({
-                            text: 'You can not login successfully, username ot password is wrong, please try again!',
+                            text: 'You can not login successfully, username or password is incorrect, please try again!',
                             ttl: 4000, //time to live in miliseconds
                             type: 'warning', //default, success, warning
                             options: [],

@@ -81,12 +81,13 @@ angular.module('IssueTracker.issue', [])
     .controller('IssueController', [
         '$scope',
         '$routeParams',
+        '$location',
         'identity',
         'user',
-        'projects',
+        'project',
         'issue',
         'label',
-        function($scope, $routeParams, identity, user, projects, issue, label){
+        function($scope, $routeParams, $location, identity, user, project, issue, label){
 
             $scope.convertToJSON = function convertToJSON(obj) {
                 try {
@@ -99,8 +100,10 @@ angular.module('IssueTracker.issue', [])
 
             $scope.isAuthenticated = identity.isAuthenticated();
 
+            $scope.isAdmin = identity.isAdmin();
+
             $scope.redirect = function(){
-                projects.redirect();
+                $location.path('/home/home');
             };
 
             $scope.isCurrentUserAssignee = function(issue){
@@ -111,6 +114,14 @@ angular.module('IssueTracker.issue', [])
                 }
             };
 
+            $scope.isCurrentUserAdminOrProjectLeader = function(project){
+                if(identity.isAdmin() || identity.isCurrentUserProjectLeader(project)){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+
             $scope.issueChangeStatus = function(id, statusId){
                 issue.issueChangeStatus(id, statusId)
                     .then(function(success){
@@ -118,7 +129,7 @@ angular.module('IssueTracker.issue', [])
                             .then(function(success){
                                 $scope.issue = success;
                                 $scope.isCurrentUserAssignee($scope.issue);
-                                projects.getProjectById($scope.issue.Project.Id)
+                                project.getProjectById($scope.issue.Project.Id)
                                     .then(function(success){
                                         $scope.project = success;
                                         if(identity.isCurrentUserProjectLeader($scope.project) || identity.isAdmin()){
@@ -180,9 +191,9 @@ angular.module('IssueTracker.issue', [])
                     }
 
                     return data;
-            }
+            };
 
-            if($routeParams.add) {
+            if($routeParams.add && $scope.isAuthenticated) {
                 $scope.isInIssueAdd = true;
                 $scope.projectId = $routeParams.id;
 
@@ -193,25 +204,24 @@ angular.module('IssueTracker.issue', [])
                         $scope.dataUsers = responce;
                     });
 
-                projects.getProjects()
+                project.getProjects()
                     .then(function(responce){
                         $scope.dataProjects = responce;
                     });
 
-                projects.getProjectById($scope.projectId)
+                project.getProjectById($scope.projectId)
                     .then(function(responce){
                         $scope.projectCurrent = responce;
-                        console.log($scope.projectCurrent);
                     });
             }
 
-            if($routeParams.id) {
+            if($routeParams.id && $scope.isAuthenticated) {
                 user.getUsers()
                     .then(function(responce){
                         $scope.dataUsers = responce;
                     });
 
-                projects.getProjects()
+                project.getProjects()
                     .then(function(responce){
                         $scope.dataProjects = responce;
                     });
@@ -222,7 +232,7 @@ angular.module('IssueTracker.issue', [])
                     .then(function(success){
                         $scope.issue = success;
                         $scope.isCurrentUserAssignee($scope.issue);
-                        projects.getProjectById($scope.issue.Project.Id)
+                        project.getProjectById($scope.issue.Project.Id)
                             .then(function(success){
                                 $scope.project = success;
                                 if(identity.isCurrentUserProjectLeader($scope.project) || identity.isAdmin()){

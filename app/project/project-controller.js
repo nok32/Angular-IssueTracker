@@ -17,7 +17,7 @@ angular.module('IssueTracker.project', [])
         });
     }])
 
-    .factory('projects', ['$q','requester', 'identity', function($q, requester, identity){
+    .factory('project', ['$q','requester', 'identity', function($q, requester, identity){
         function getProjects(){
             var url = 'Projects/?pageSize=100&pageNumber=1&filterS';
 
@@ -63,20 +63,22 @@ angular.module('IssueTracker.project', [])
         '$routeParams',
         'issue',
         'identity',
-        'projects',
-        function ($scope, $location, $routeParams, issue, identity, projects) {
+        'project',
+        function ($scope, $location, $routeParams, issue, identity, project) {
 
             $scope.isAuthenticated = identity.isAuthenticated();
 
             $scope.userId = identity.getId();
 
-            $scope.isCurrentUserProjectLeader = function(currentProject){
-                if(currentProject.Lead.Id == identity.getId()){
-                    $scope.isProjectLeader = true;
+            $scope.isAdmin = identity.isAdmin();
+
+            $scope.isCurrentUserAdminOrProjectLeader = function(project){
+                if(identity.isAdmin() || identity.isCurrentUserProjectLeader(project)){
+                    return true;
                 }else{
-                    $scope.isProjectLeader = false;
+                    return false;
                 }
-            };
+            }
 
             $scope.getProjectIssues = function(id){
                 issue.getProjectIssues(id)
@@ -92,7 +94,7 @@ angular.module('IssueTracker.project', [])
             }
 
             $scope.editProject = function(data){
-                projects.editProject($routeParams.id, data)
+                project.editProject($routeParams.id, data)
                     .then(function(success){
                         console.log(success);
                     }, function(error){
@@ -102,27 +104,17 @@ angular.module('IssueTracker.project', [])
 
             if (identity.getToken()) {
 
-                projects.getProjects()
+                project.getProjects()
                     .then(function(responce){
                         $scope.projects = responce;
                     });
 
                 if ($routeParams.id) {
-                    projects.getProjectById($routeParams.id)
+                    project.getProjectById($routeParams.id)
                         .then(function(success){
                             $scope.project = success;
 
-                            $scope.isCurrentUserProjectLeader($scope.project);
-
                             $scope.getProjectIssues($scope.project.Id);
-
-                            $scope.isCurrentUserProjectTeamLeaderOrAdmin = function(){
-                                if($scope.project.Lead.Id === $scope.userId || identity.isAdmin()){
-                                    return true;
-                                }else{
-                                    return false;
-                                }
-                            }
 
                         }, function (error) {
                             console.log(error);

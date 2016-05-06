@@ -28,16 +28,16 @@ angular.module('IssueTracker.home', [])
         '$location',
         'identity',
         'issue',
-        'projects',
-        function($scope, $location, identity, issue, projects){
-
-            console.log(identity.getToken());
+        'project',
+        function($scope, $location, identity, issue, project){
 
             $scope.isAuthenticated = identity.isAuthenticated();
 
             $scope.userId = identity.getId();
 
             $scope.userName = identity.getUsername();
+
+            $scope.isAdmin = identity.isAdmin();
 
             $scope.redirect = function(){
                 $location.path('/user/login');
@@ -58,7 +58,7 @@ angular.module('IssueTracker.home', [])
             };
 
             $scope.getMyProjects = function(pageSize, page, filter){
-                projects.getMyProjects(pageSize, page, filter)
+                project.getMyProjects(pageSize, page, filter)
                     .then(function(success){
                         $scope.projects = success;
                         $scope.projects =success;

@@ -61,9 +61,9 @@ angular.module('IssueTracker.main', [])
     })
 
     .controller('MainController', ['$scope','identity', function($scope, identity) {
-        if (angular.isDefined(identity.getToken())) {
-            $scope.currentUserId = function(){
+        if (identity.getToken()) {
+            $scope.currentUserId = function () {
                 return identity.getId();
-            }
+            };
         }
     }]);

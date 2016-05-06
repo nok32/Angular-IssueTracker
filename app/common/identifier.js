@@ -21,7 +21,9 @@ angular.module('IssueTracker.identifier', [])
         }
 
         function isAdmin(){
-            return JSON.parse(localStorage.getItem('identity')).IsAdmin;
+            if(localStorage.identity){
+                return JSON.parse(localStorage.getItem('identity')).IsAdmin;
+            }
         }
 
         function getUsername() {
@@ -49,8 +51,12 @@ angular.module('IssueTracker.identifier', [])
         }
 
         function isCurrentUserProjectLeader(project){
-            if(project.Lead.Id === getId){
-                return true;
+            if(project){
+                if(project.Lead.Id === getId){
+                    return true;
+                }else{
+                    return false;
+                }
             }else{
                 return false;
             }

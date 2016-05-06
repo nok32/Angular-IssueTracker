@@ -5,7 +5,6 @@
         <h1>Dashboard</h1>
         <h1>Affiliated Projects</h1>
         <ul>
-        <ul>
             <li ng-repeat="project in projects.Projects"><a ng-href="#/projects/{{project.Id}}"><h3>{{project.Name}}</h3></a></li>
         </ul>
         <ul class="pagination">
@@ -32,7 +31,7 @@
                 <tr ng-repeat="issue in issues.Issues | orderBy: '-DueDate' : reverse">
                     <td><a ng-href="#/issues/{{issue.Id}}">{{issue.Title}}</a></td>
                     <td>{{issue.Description}}</td>
-                    <td>{{issue.Project.Name}}</td>
+                    <td><a ng-href="#/projects/{{issue.Project.Id}}">{{issue.Project.Name}}</a></td>
                     <td>{{issue.DueDate}}</td>
                 </tr>
             </table>

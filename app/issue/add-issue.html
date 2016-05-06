@@ -1,8 +1,8 @@
-<div ng-if="isAuthenticated || redirect()" class="row">
+<div ng-if="isCurrentUserAdminOrProjectLeader(projectCurrent) || redirect()" class="row">
     <div class="row">
         <div main-menu></div>
-        <form name="AddIssueForm">
-            <h1>Hello from add Issue</h1>
+        <div class="col-md-6">
+            <form name="AddIssueForm">
             <p>
                 <label>Title</label>
                 <input type="text" ng-model="issueToAdding.Title">
@@ -42,5 +42,6 @@
             </p>
             <a ng-click="addIssue(issueToAdding)" class="btn btn-success">Add Issue</a>
         </form>
+        </div>
     </div>
 </div>

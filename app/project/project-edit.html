@@ -1,5 +1,5 @@
-<div ng-if="isAuthenticated || redirect()" class="row">
-    <div ng-if="isProjectLeader">
+<div ng-if="isCurrentUserAdminOrProjectLeader(project) || redirect()" class="row">
+    <div ng-if="isCurrentUserAdminOrProjectLeader(project)">
         <div main-menu></div>
         <div class="col-md-6">
             <p>Project key: {{project.ProjectKey}}</p>
