@@ -9,9 +9,13 @@ angular.module('IssueTracker.user', [])
             templateUrl: 'app/user/user-logout.html',
             controller: 'UserController'
         });
+        $routeProvider.when('/profile/password', {
+            templateUrl: 'app/user/user-change-password.html',
+            controller: 'UserController'
+        });
     }])
 
-    .factory('users', ['$q','requester', 'identity', function($q, requester, identity){
+    .factory('user', ['$q','requester', 'identity', function($q, requester, identity){
         function getUsers(){
             var url = 'Users';
 
@@ -43,8 +47,15 @@ angular.module('IssueTracker.user', [])
         'noty',
         'requester',
         'identity',
-        'users',
-        function ($scope, $location, noty,requester, identity, users) {
+        function ($scope, $location, noty, requester, identity) {
+
+            if(identity.isAuthenticated()){
+                $scope.isAuthenticated = true;
+            }
+
+            $scope.redirect = function(){
+                $location.path('/user/login');
+            };
 
             $scope.register = function(user) {
                 var url = 'api/Account/Register';
@@ -58,7 +69,7 @@ angular.module('IssueTracker.user', [])
                 if (user.password !== user.confirmPassword) {
                     $scope.errorConfirmPassword = 'Confirm Password must be the same like password!'
                     noty.showNoty({
-                        text: 'You can not register successfuly, please try again!',
+                        text: 'You can not register successfully, please try again!',
                         ttl: 4000, //time to live in miliseconds
                         type: 'warning', //default, success, warning
                         options: [],
@@ -70,7 +81,7 @@ angular.module('IssueTracker.user', [])
                     requester.post(url, data)
                         .then(function(success){
                             noty.showNoty({
-                                text: data.email + ', you have register successfuly!',
+                                text: data.email + ', you have register successfully!',
                                 ttl: 4000, //time to live in miliseconds
                                 type: 'success', //default, success, warning
                                 options: [],
@@ -81,7 +92,7 @@ angular.module('IssueTracker.user', [])
                             $scope.login(user);
                         }, function(error){
                             noty.showNoty({
-                                text: 'You can not register successfuly, please try again!',
+                                text: 'You can not register successfully, please try again!',
                                 ttl: 4000, //time to live in miliseconds
                                 type: 'warning', //default, success, warning
                                 options: [],
@@ -124,7 +135,7 @@ angular.module('IssueTracker.user', [])
                                 identity.setIdentity(user);
 
                                 noty.showNoty({
-                                    text: 'Welcome ' + user.Username + ', you have login successfuly!',
+                                    text: 'Welcome ' + user.Username + ', you have login successfully!',
                                     ttl: 3500, //time to live in miliseconds
                                     type: 'success', //default, success, warning
                                     options: [],
@@ -132,12 +143,13 @@ angular.module('IssueTracker.user', [])
                                         //handling code for options clicked
                                     }
                                 });
-                                $location.path('/alabala');
+
+                                $location.path('/home');
                             });
 
                     },function(error){
                         noty.showNoty({
-                            text: 'You can not login successfuly, please try again!',
+                            text: 'You can not login successfully, username ot password is wrong, please try again!',
                             ttl: 4000, //time to live in miliseconds
                             type: 'warning', //default, success, warning
                             options: [],
@@ -154,7 +166,7 @@ angular.module('IssueTracker.user', [])
 
                 if(!identity.getToken()){
                     noty.showNoty({
-                        text: 'You have logout successfuly!',
+                        text: 'You have logout successfully!',
                         ttl: 3500, //time to live in miliseconds
                         type: 'success', //default, success, warning
                         options: [],
@@ -164,7 +176,7 @@ angular.module('IssueTracker.user', [])
                     });
                 }else{
                     noty.showNoty({
-                        text: 'You can not logout successfuly, please try again!',
+                        text: 'You can not logout successfully, please try again!',
                         ttl: 4000, //time to live in miliseconds
                         type: 'warning', //default, success, warning
                         options: [],
@@ -177,12 +189,45 @@ angular.module('IssueTracker.user', [])
                 $location.path('app/home');
             };
 
-            $scope.getUsers = function(){
-                users.getUsers()
-                    .then(function(responce){
-                        $scope.allUsers = responce;
-                    });
-            }
+            $scope.changePassword = function(password){
+                var url = 'api/Account/ChangePassword';
 
+                if (password.NewPassword !== password.ConfirmPassword) {
+                    $scope.confirmNewPassword = 'Confirm new Password must be the same like new password!'
+                    noty.showNoty({
+                        text: 'You can not change you password successfully, please try again!',
+                        ttl: 4000, //time to live in miliseconds
+                        type: 'warning', //default, success, warning
+                        options: [],
+                        optionsCallBack:  function callback(optionClicked, optionIndexClicked) {
+                            //handling code for options clicked
+                        }
+                    });
+                }else{
+                    requester.post(url, password, identity.getHeaderWithToken())
+                        .then(function(success){
+                            noty.showNoty({
+                                text: 'You have change you password successfully!',
+                                ttl: 4000, //time to live in miliseconds
+                                type: 'success', //default, success, warning
+                                options: [],
+                                optionsCallBack:  function callback(optionClicked, optionIndexClicked) {
+                                    //handling code for options clicked
+                                }
+                            });
+                        }, function(error){
+                            noty.showNoty({
+                                text: 'You can not change you password successfully, please try again!',
+                                ttl: 4000, //time to live in miliseconds
+                                type: 'warning', //default, success, warning
+                                options: [],
+                                optionsCallBack:  function callback(optionClicked, optionIndexClicked) {
+                                    //handling code for options clicked
+                                }
+                            });
+                            console.log(error);
+                        });
+                }
+            }
         }
     ]);

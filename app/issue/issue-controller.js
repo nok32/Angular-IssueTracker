@@ -82,11 +82,11 @@ angular.module('IssueTracker.issue', [])
         '$scope',
         '$routeParams',
         'identity',
-        'users',
+        'user',
         'projects',
         'issue',
         'label',
-        function($scope, $routeParams, identity, users, projects, issue, label){
+        function($scope, $routeParams, identity, user, projects, issue, label){
 
             $scope.convertToJSON = function convertToJSON(obj) {
                 try {
@@ -188,7 +188,7 @@ angular.module('IssueTracker.issue', [])
 
                 $scope.getExistingLabels();
 
-                users.getUsers()
+                user.getUsers()
                     .then(function(responce){
                         $scope.dataUsers = responce;
                     });
@@ -206,7 +206,7 @@ angular.module('IssueTracker.issue', [])
             }
 
             if($routeParams.id) {
-                users.getUsers()
+                user.getUsers()
                     .then(function(responce){
                         $scope.dataUsers = responce;
                     });

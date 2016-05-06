@@ -100,7 +100,6 @@ angular.module('IssueTracker.project', [])
                     })
             };
 
-
             if (identity.getToken()) {
 
                 projects.getProjects()

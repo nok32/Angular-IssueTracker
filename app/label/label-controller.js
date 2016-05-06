@@ -10,7 +10,7 @@ angular.module('IssueTracker.label', [])
                 var url = 'Labels/?filter=';
 
                 return requester.get(url, identity.getHeaderWithToken());
-            }
+            };
 
             return {
                 getLabels: getLabels
