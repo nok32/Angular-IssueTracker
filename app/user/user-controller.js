@@ -150,17 +150,29 @@ angular.module('IssueTracker.user', [])
             }
 
             $scope.logout = function(){
-                noty.showNoty({
-                    text: 'You have logout successfuly!',
-                    ttl: 3500, //time to live in miliseconds
-                    type: 'success', //default, success, warning
-                    options: [],
-                    optionsCallBack:  function callback(optionClicked, optionIndexClicked) {
-                        //handling code for options clicked
-                    }
-                });
-
                 identity.logout();
+
+                if(!identity.getToken()){
+                    noty.showNoty({
+                        text: 'You have logout successfuly!',
+                        ttl: 3500, //time to live in miliseconds
+                        type: 'success', //default, success, warning
+                        options: [],
+                        optionsCallBack:  function callback(optionClicked, optionIndexClicked) {
+                            //handling code for options clicked
+                        }
+                    });
+                }else{
+                    noty.showNoty({
+                        text: 'You can not logout successfuly, please try again!',
+                        ttl: 4000, //time to live in miliseconds
+                        type: 'warning', //default, success, warning
+                        options: [],
+                        optionsCallBack:  function callback(optionClicked, optionIndexClicked) {
+                            //handling code for options clicked
+                        }
+                    });
+                }
 
                 $location.path('app/home');
             };
