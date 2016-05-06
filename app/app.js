@@ -3,6 +3,8 @@
 // Declare app level module which depends on views, and components
 angular.module('IssueTracker', [
     'ngRoute',
+    'ngAnimate',
+    'angular-noty',
     'IssueTracker.view1',
     'IssueTracker.identifier',
     'IssueTracker.label',

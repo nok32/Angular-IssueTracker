@@ -40,10 +40,11 @@ angular.module('IssueTracker.user', [])
     .controller('UserController', [
         '$scope',
         '$location',
+        'noty',
         'requester',
         'identity',
         'users',
-        function ($scope, $location,requester, identity, users) {
+        function ($scope, $location, noty,requester, identity, users) {
 
             $scope.register = function(user) {
                 var url = 'api/Account/Register';
@@ -56,11 +57,38 @@ angular.module('IssueTracker.user', [])
 
                 if (user.password !== user.confirmPassword) {
                     $scope.errorConfirmPassword = 'Confirm Password must be the same like password!'
+                    noty.showNoty({
+                        text: 'You can not register successfuly, please try again!',
+                        ttl: 4000, //time to live in miliseconds
+                        type: 'warning', //default, success, warning
+                        options: [],
+                        optionsCallBack:  function callback(optionClicked, optionIndexClicked) {
+                            //handling code for options clicked
+                        }
+                    });
                 }else{
                     requester.post(url, data)
                         .then(function(success){
+                            noty.showNoty({
+                                text: data.email + ', you have register successfuly!',
+                                ttl: 4000, //time to live in miliseconds
+                                type: 'success', //default, success, warning
+                                options: [],
+                                optionsCallBack:  function callback(optionClicked, optionIndexClicked) {
+                                    //handling code for options clicked
+                                }
+                            });
                             $scope.login(user);
                         }, function(error){
+                            noty.showNoty({
+                                text: 'You can not register successfuly, please try again!',
+                                ttl: 4000, //time to live in miliseconds
+                                type: 'warning', //default, success, warning
+                                options: [],
+                                optionsCallBack:  function callback(optionClicked, optionIndexClicked) {
+                                    //handling code for options clicked
+                                }
+                            });
                             console.log(error);
                         });
                 }
@@ -95,16 +123,45 @@ angular.module('IssueTracker.user', [])
 
                                 identity.setIdentity(user);
 
+                                noty.showNoty({
+                                    text: 'Welcome ' + user.Username + ', you have login successfuly!',
+                                    ttl: 3500, //time to live in miliseconds
+                                    type: 'success', //default, success, warning
+                                    options: [],
+                                    optionsCallBack:  function callback(optionClicked, optionIndexClicked) {
+                                        //handling code for options clicked
+                                    }
+                                });
                                 $location.path('/alabala');
                             });
 
                     },function(error){
+                        noty.showNoty({
+                            text: 'You can not login successfuly, please try again!',
+                            ttl: 4000, //time to live in miliseconds
+                            type: 'warning', //default, success, warning
+                            options: [],
+                            optionsCallBack:  function callback(optionClicked, optionIndexClicked) {
+                                //handling code for options clicked
+                            }
+                        });
                         console.log(error);
                     })
             }
 
             $scope.logout = function(){
+                noty.showNoty({
+                    text: 'You have logout successfuly!',
+                    ttl: 3500, //time to live in miliseconds
+                    type: 'success', //default, success, warning
+                    options: [],
+                    optionsCallBack:  function callback(optionClicked, optionIndexClicked) {
+                        //handling code for options clicked
+                    }
+                });
+
                 identity.logout();
+
                 $location.path('app/home');
             };
 

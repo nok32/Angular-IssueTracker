@@ -38,7 +38,7 @@ angular.module('IssueTracker.project', [])
 
         function editProject(id, data){
             var url = 'Projects/' + id;
-            console.log(data);
+
             return requester.put(url, data, identity.getHeaderWithToken());
         }
 
@@ -92,8 +92,6 @@ angular.module('IssueTracker.project', [])
             }
 
             $scope.editProject = function(data){
-                console.log($routeParams.id);
-                console.log(data);
                 projects.editProject($routeParams.id, data)
                     .then(function(success){
                         console.log(success);
@@ -103,7 +101,7 @@ angular.module('IssueTracker.project', [])
             };
 
 
-            if (angular.isDefined(identity.getToken())) {
+            if (identity.getToken()) {
 
                 projects.getProjects()
                     .then(function(responce){
