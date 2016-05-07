@@ -1,4 +1,4 @@
-<div ng-if="isAuthenticated || isAssignee || redirect()" class="row">
+<div ng-if="isAuthenticated || isCurrentUserAssignee || redirect()" class="row">
     <div class="row">
         <div main-menu></div>
         <div class="col-md-6">
@@ -37,11 +37,11 @@
                     <label>DueDate</label>
                     <input ng-model="issueToEdit.DueDate" type="datetime">
                 </p>
-                <a ng-if="isCurentUserAdminOrProjectLeader" ng-click="editIssue(issue.Id,issueToEdit)" class="btn btn-success">Edit Issue</a>
+                <a ng-if="isTeamLeader || isAdmin" ng-click="editIssue(issue.Id,issueToEdit)" class="btn btn-success">Edit Issue</a>
             </form>
         </div>
         <div class="col-md-6">
-            <div change-status ng-if="isAssignee || isCurentUserAdminOrProjectLeader"></div>
+            <div change-status ng-if="isAssignee || isTeamLeader || isAdmin"></div>
         </div>
     </div>
 </div>

@@ -5,15 +5,101 @@ angular.module('IssueTracker.issue', [])
     .config(['$routeProvider', function($routeProvider) {
         $routeProvider.when('/projects/:id/:add-issue', {
             templateUrl: 'app/issue/add-issue.html',
-            controller: 'IssueController'
+            controller: 'IssueController',
+            resolve:{
+                isAdmin: function (identity) {
+                    return identity.isAdmin();
+                },
+                isAuthenticated: function (identity) {
+                    return identity.isAuthenticated();
+                },
+                isTeamLeader: function(identity, $route, project){
+                    var id = $route.current.params.id;
+                    return project.getProjectById(id)
+                        .then(function(success){
+                            return identity.isCurrentUserProjectLeader(success);
+                        });
+                },
+                isCurrentUserAssignee : function(issue, $route, identity){
+                    return issue.getIssueById($route.current.params.id)
+                        .then(function(currentIssue){
+                            if(currentIssue.Assignee.Id === identity.getId()){
+                                return true;
+                            }else{
+                                return false;
+                            }
+                        });
+                }
+            }
         });
         $routeProvider.when('/issues/:id', {
             templateUrl: 'app/issue/issue.html',
-            controller: 'IssueController'
+            controller: 'IssueController',
+            resolve:{
+                isAdmin: function (identity) {
+                    return identity.isAdmin();
+                },
+                isAuthenticated: function (identity) {
+                    return identity.isAuthenticated();
+                },
+                isTeamLeader: function(identity, $route, project, issue){
+                        var id = $route.current.params.id;
+                        return issue.getIssueById(id)
+                            .then(function(issueProject){
+                                return project.getProjectById(issueProject.Project.Id)
+                                    .then(function(issueFullProject){
+                                        var result = identity.isCurrentUserProjectLeader(issueFullProject);
+                                        console.log(result);
+                                        return result;
+                                    });
+                            })
+                },
+                isCurrentUserAssignee : function(issue, $route, identity){
+                    console.log($route);
+                    return issue.getIssueById($route.current.params.id)
+                        .then(function(currentIssue){
+                            if(currentIssue.Assignee.Id === identity.getId()){
+                                return true;
+                            }else{
+                                return false;
+                            }
+                        });
+                }
+            }
         });
         $routeProvider.when('/issues/:id/edit', {
             templateUrl: 'app/issue/edit-issue.html',
-            controller: 'IssueController'
+            controller: 'IssueController',
+            resolve:{
+                isAdmin: function (identity) {
+                    return identity.isAdmin();
+                },
+                isAuthenticated: function (identity) {
+                    return identity.isAuthenticated();
+                },
+                isTeamLeader: function(identity, $route, project, issue){
+                    var id = $route.current.params.id;
+                    return issue.getIssueById(id)
+                        .then(function(issueProject){
+                            return project.getProjectById(issueProject.Project.Id)
+                                .then(function(issueFullProject){
+                                    var result = identity.isCurrentUserProjectLeader(issueFullProject);
+                                    console.log(result);
+                                    return result;
+                                });
+                        })
+                },
+                isCurrentUserAssignee : function(issue, $route, identity){
+                    return issue.getIssueById($route.current.params.id)
+                        .then(function(currentIssue){
+                            if(currentIssue.Assignee.Id === identity.getId()){
+                                return true;
+                            }else{
+                                return false;
+                            }
+                        });
+                }
+            }
         });
     }])
 
@@ -87,7 +173,11 @@ angular.module('IssueTracker.issue', [])
         'project',
         'issue',
         'label',
-        function($scope, $routeParams, $location, identity, user, project, issue, label){
+        'isAdmin',
+        'isAuthenticated',
+        'isTeamLeader',
+        'isCurrentUserAssignee',
+        function($scope, $routeParams, $location, identity, user, project, issue, label, isAdmin, isAuthenticated, isTeamLeader, isCurrentUserAssignee){
 
             $scope.convertToJSON = function convertToJSON(obj) {
                 try {
@@ -98,37 +188,19 @@ angular.module('IssueTracker.issue', [])
                 return JSON.parse(obj);
             };
 
-            $scope.isAuthenticated = identity.isAuthenticated();
+            $scope.isAuthenticated = isAuthenticated;
 
-            $scope.isAdmin = identity.isAdmin();
+            $scope.isAssignee = isCurrentUserAssignee;
 
-            $scope.isTeamLeader = function(project){
-                if(identity.isCurrentUserProjectLeader(project)){
-                    return true;
-                }else{
-                    return false;
-                }
-            };
+            $scope.isAdmin = isAdmin;
+
+            $scope.isTeamLeader = isTeamLeader;
+
 
             $scope.redirect = function(){
                 $location.path('/home/home');
             };
 
-            $scope.isCurrentUserAssignee = function(issue){
-                if(issue.Assignee.Id === identity.getId()){
-                    $scope.isAssignee = true;
-                }else{
-                    $scope.isAssignee = false;
-                }
-            };
-
-            $scope.isCurrentUserAdminOrProjectLeader = function(project){
-                if(identity.isAdmin() || identity.isCurrentUserProjectLeader(project)){
-                    return true;
-                }else{
-                    return false;
-                }
-            }
 
             $scope.issueChangeStatus = function(id, statusId){
                 issue.issueChangeStatus(id, statusId)
@@ -205,13 +277,6 @@ angular.module('IssueTracker.issue', [])
                 $scope.isInIssueAdd = true;
                 $scope.projectId = $routeParams.id;
 
-                $scope.getExistingLabels();
-
-                user.getUsers()
-                    .then(function(responce){
-                        $scope.dataUsers = responce;
-                    });
-
                 project.getProjects()
                     .then(function(responce){
                         $scope.dataProjects = responce;
@@ -220,7 +285,12 @@ angular.module('IssueTracker.issue', [])
                 project.getProjectById($scope.projectId)
                     .then(function(responce){
                         $scope.projectCurrent = responce;
-                        $scope.isTeamLeader = $scope.isTeamLeader($scope.projectCurrent);
+                    });
+                $scope.getExistingLabels();
+
+                user.getUsers()
+                    .then(function(responce){
+                        $scope.dataUsers = responce;
                     });
             }
 
@@ -240,15 +310,10 @@ angular.module('IssueTracker.issue', [])
                 issue.getIssueById($routeParams.id)
                     .then(function(success){
                         $scope.issue = success;
-                        $scope.isCurrentUserAssignee($scope.issue);
                         project.getProjectById($scope.issue.Project.Id)
                             .then(function(success){
                                 $scope.project = success;
-                                if(identity.isCurrentUserProjectLeader($scope.project) || identity.isAdmin()){
-                                    $scope.isCurentUserAdminOrProjectLeader = true;
-                                }else{
-                                    $scope.isCurentUserAdminOrProjectLeader = false;
-                                }
+
                                 $scope.issueToEdit = $scope.issue;
 
                             }, function (error) {

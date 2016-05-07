@@ -2,7 +2,7 @@
     <div main-menu></div>
     <div class="col-md-6">
         <h1>Hello from issue.html</h1>
-        <h4>{{issue.IssueKey}}<div style="display: inline-block" issue-project-leader ng-show="isCurentUserAdminOrProjectLeader"></div></h4>
+        <h4>{{issue.IssueKey}}<div style="display: inline-block" issue-project-leader ng-show="isTeamLeader || isAdmin"></div></h4>
         <p>
             <label>Title</label>
             <input ng-model="issue.Title"  value="issue.Title">
@@ -31,6 +31,6 @@
         <p>Labels: <span ng-repeat="label in issue.Labels">{{label.Name}}, </span> </p>
     </div>
     <div class="col-md-6">
-        <div change-status ng-if="isCurentUserAdminOrProjectLeader || isAssignee"></div>
+        <div change-status ng-if="isAdmin || isTeamLeader || isAssignee"></div>
     </div>
 </div>
