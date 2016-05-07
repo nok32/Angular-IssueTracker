@@ -252,7 +252,7 @@ angular.module('IssueTracker.project', [])
                 project.addProject(prepareData)
                     .then(function(success){
                         noty.showNoty({
-                            text: 'You create successfully added!',
+                            text: 'You create successfully new Project!',
                             ttl: 5000, //time to live in miliseconds
                             type: 'success', //default, success, warning
                             options: [],

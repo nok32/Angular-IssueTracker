@@ -13,6 +13,7 @@ angular.module('IssueTracker', [
     'IssueTracker.user',
     'IssueTracker.home',
     'IssueTracker.main',
+    'datetimepicker',
 ]).config(['$routeProvider', function($routeProvider) {
   $routeProvider.otherwise({redirectTo: '/'});
 }]);

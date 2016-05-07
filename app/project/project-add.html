@@ -1,33 +1,33 @@
-<div ng-if="isAdmin || redirect()">
+<div class="row" ng-if="isAdmin || redirect()">
     <div main-menu></div>
     <div class="col-md-6">
         <form name="AddProjectForm" >
             <p>
                 <label>Name</label>
-                <input ng-keyup="generateProjectKey(projectToAdd.Name)" type="text" ng-model="projectToAdd.Name" required>
+                <input class="form-control" ng-keyup="generateProjectKey(projectToAdd.Name)" type="text" ng-model="projectToAdd.Name" required>
             </p>
             <p>
                 <label>Description</label>
-                <textarea type="text" ng-model="projectToAdd.Description" required></textarea>
+                <textarea class="form-control" type="text" ng-model="projectToAdd.Description" required></textarea>
             </p>
             <p>
                 <label>ProjectKey</label>
-                <input type="text" ng-model="projectToAdd.ProjectKey" disabled required>
+                <input class="form-control" type="text" ng-model="projectToAdd.ProjectKey" disabled required>
             </p>
             <p>
                 <label>Label</label>
-                <input list="labels-collection" ng-model="projectToAdd.Labels"  autocomplete="on" required/>
+                <input class="form-control" list="labels-collection" ng-model="projectToAdd.Labels"  autocomplete="on" required/>
                 <datalist id="labels-collection">
                     <option ng-repeat="label in existingLabels" value="{{label.Name}}">{{label.Name}}</option>
                 </datalist>
             </p>
             <p>
                 <label>Priority</label>
-                <input ng-model="projectToAdd.Priorities" required/>
+                <input class="form-control" ng-model="projectToAdd.Priorities" required/>
             </p>
             <p>
                 <label>LeadId</label>
-                <select ng-options="user.Username for user in dataUsers track by user.Id" ng-model="projectToAdd.LeadId" required></select>
+                <select class="form-control" ng-options="user.Username for user in dataUsers track by user.Id" ng-model="projectToAdd.LeadId" required></select>
             </p>
             <button ng-click="addProject(projectToAdd)" ng-disabled="AddProjectForm.$invalid"  class="btn btn-success">Add Issue</button>
         </form>

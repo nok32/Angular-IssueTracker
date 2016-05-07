@@ -313,8 +313,6 @@ angular.module('IssueTracker.issue', [])
 
             $scope.addIssue = function(issueToAdding){
 
-                console.log(issueToAdding);
-
                 var data = $scope.preparingIssueForDataBase(issueToAdding);
 
                 issue.addNewIssue(data)

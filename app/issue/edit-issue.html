@@ -5,39 +5,44 @@
             <form name="EditIssueForm">
                 <p>
                     <label>Title</label>
-                    <input type="text" ng-model="issueToEdit.Title">
+                    <input class="form-control" type="text" ng-model="issueToEdit.Title" required>
                 </p>
                 <p>
                     <label>Description</label>
-                    <textarea type="text" ng-model="issueToEdit.Description"></textarea>
+                    <textarea class="form-control" type="text" ng-model="issueToEdit.Description" required></textarea>
                 </p>
                 <p>
                     <label>Projects</label>
                     <!--TODO to work with normal add issue-->
-                    <select ng-options="project.Name for project in dataProjects track by project.Id" ng-model="issueToEdit.Project"></select>
+                    <select class="form-control" ng-options="project.Name for project in dataProjects track by project.Id" ng-model="issueToEdit.Project" required></select>
                 </p>
                 <p>
                     <label>Priority</label>
-                    <select ng-model="issueToEdit.Priority">
+                    <select class="form-control" ng-model="issueToEdit.Priority" required>
                         <option ng-repeat="priority in issueToEdit.Project.Priorities" value="{{priority}}">{{priority.Name}}</option>
                     </select>
                 </p>
                 <p>
                     <label>Label</label>
-                    <input list="labels-collection" ng-model="issueToEdit.Label"  autocomplete="on" />
+                    <input class="form-control" list="labels-collection" ng-model="issueToEdit.Label"  autocomplete="on" required/>
                     <datalist id="labels-collection">
                         <option ng-repeat="label in existingLabels" value="{{label.Name}}">{{label.Name}}</option>
                     </datalist>
                 </p>
                 <p>
                     <label>Assignee</label>
-                    <select ng-options="user.Username for user in dataUsers track by user.Id" ng-model="issueToEdit.Assignee"></select>
+                    <select class="form-control" ng-options="user.Username for user in dataUsers track by user.Id" ng-model="issueToEdit.Assignee" required></select>
                 </p>
                 <p>
                     <label>DueDate</label>
-                    <input ng-model="issueToEdit.DueDate" type="datetime">
+                    <div class='input-group date' id='datetimepicker1'>
+                        <input datetimepicker type='text' class="form-control" ng-model="issueToEdit.DueDate" value="{{issueToAdding.DueDate}}" required/>
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
                 </p>
-                <a ng-if="isTeamLeader || isAdmin" ng-click="editIssue(issue.Id,issueToEdit)" class="btn btn-success">Edit Issue</a>
+                <button ng-if="isTeamLeader || isAdmin" ng-disabled="EditIssueForm.$invalid" ng-click="editIssue(issue.Id,issueToEdit)" class="btn btn-success">Edit Issue</button>
             </form>
         </div>
         <div class="col-md-6">

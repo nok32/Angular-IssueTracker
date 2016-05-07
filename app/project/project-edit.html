@@ -1,26 +1,32 @@
 <div ng-if="isTeamLeader || isAdmin || redirect()" class="row">
     <div main-menu></div>
     <div class="col-md-6">
-        <p>Project key: {{project.ProjectKey}}</p>
-        <p>
-            <label>Name</label>
-            <input ng-model="project.Name">
-        </p>
-        <p>
-            <label>Description</label>
-            <input ng-model="project.Description">
-        </p>
-        <p>
-            <label>LeadId</label>
-            <span>({{project.Lead.Id}})</span>
-            <input ng-model="project.Lead.Username">
-        </p>
-        <p>Labels:
-            <span ng-model="project.Labels" ng-repeat="label in project.Labels"> {{label.Name}},</span>
-        </p>
-        <p>Priorities:
-            <span ng-model="project.Priorities" ng-repeat="priority in project.Priorities"> {{priority.Name}},</span>
-        </p>
-        <button class="btn btn-success" ng-click="editProject(project)">Edit</button>
+        <form name="EditProjectForm">
+            <p>Project key: {{project.ProjectKey}}</p>
+            <p>
+                <label>Name</label>
+                <input class="form-control" ng-model="project.Name" required />
+            </p>
+            <p>
+                <label>Description</label>
+                <input class="form-control" ng-model="project.Description" required>
+            </p>
+            <p>
+                <label>LeadId</label>
+                <span>({{project.Lead.Id}})</span>
+                <input class="form-control" ng-model="project.Lead.Username" required>
+            </p>
+            <p>
+                <label>Label</label>
+                <input class="form-control" list="labels-collection" ng-model="project.Labels"  autocomplete="on" required/>
+                <datalist id="labels-collection">
+                    <option ng-repeat="label in project.Labels" value="{{label.Name}}">{{label.Id}}</option>
+                </datalist>
+            </p>
+            <p>Priorities:
+                <span ng-model="project.Priorities" ng-repeat="priority in project.Priorities"> {{priority.Name}}</span>
+            </p>
+            <button ng-disabled="EditProjectForm.$invalid" class="btn btn-success" ng-click="editProject(project)">Edit</button>
+        </form>
     </div>
 </div>
