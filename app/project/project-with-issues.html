@@ -1,29 +1,37 @@
 <div ng-if="isAuthenticated || redirect()" class="row">
     <div main-menu></div>
     <div class="col-md-6">
-        <h4>{{project.ProjectKey}}
-            <div style="display: inline-block" project-leader ng-if="isTeamLeader || isAdmin"></div>
-        </h4>
-        <p>Project key: {{project.ProjectKey}}</p>
-        <p>
-            <label>Name</label>
-            <input ng-model="project.Name">
-        </p>
-        <p>
-            <label>Description</label>
-            <input ng-model="project.Description">
-        </p>
-        <p>
-            <label>LeadId</label>
-            <span>({{project.Lead.Id}})</span>
-            <input ng-model="project.Lead.Username">
-        </p>
-        <p>Labels:
-            <span ng-repeat="label in project.Labels"> {{label.Name}},</span>
-        </p>
-        <p>Priorities:
-            <span ng-repeat="priority in project.Priorities"> {{priority.Name}},</span>
-        </p>
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{project.ProjectKey}}
+                    <div style="display: inline-block" project-leader ng-show="isTeamLeader || isAdmin"></div>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <h2 class="text-center" ng-bind="project.Name"></h2>
+                <hr />
+                <h4 class="text-center">Description</h4>
+                <div class="alert alert-info text-center" role="alert" style="overflow: auto">
+                    <strong ng-bind="project.Description"></strong>
+                </div>
+                <hr />
+                <h4 class="text-center">LeadId</h4>
+                <div class="alert alert-success text-center" role="success">
+                    <span>(current id: {{project.Lead.Id}})</span>
+                    <strong ng-bind="project.Lead.Username"></strong>
+                </div>
+                <hr />
+                <div class="alert alert-success" role="success">
+                    <strong>Priorities:
+                        <span ng-repeat="priority in project.Priorities"> {{priority.Name}},</span>
+                    </strong>
+                    <br />
+                    <strong>Labels:
+                        <span ng-repeat="label in project.Labels">{{label.Name}}, </span>
+                    </strong>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="col-md-6">
         <div class="table-responsive">

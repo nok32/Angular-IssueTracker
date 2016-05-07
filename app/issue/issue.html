@@ -1,34 +1,48 @@
 <div class="row" ng-if="isAuthenticated || redirect()">
     <div main-menu></div>
     <div class="col-md-6">
-        <h1>Hello from issue.html</h1>
-        <h4>{{issue.IssueKey}}<div style="display: inline-block" issue-project-leader ng-show="isTeamLeader || isAdmin"></div></h4>
-        <p>
-            <label>Title</label>
-            <input ng-model="issue.Title"  value="issue.Title">
-        </p>
-        <p>
-            <label>Description</label>
-            <textarea ng-model="issue.Description" value="issue.Description"></textarea>
-        </p>
-        <p>
-            <label>AssigneeId</label>
-            <span>(current id: {{issue.Assignee.Id}})</span>
-            <input ng-model="issue.Assignee.Username" value="issue.Assignee.Username">
-        </p>
-        <p>
-            <label>PriorityId</label>
-            <span>(current id: {{issue.Priority.Id}})</span>
-            <input ng-model="issue.Priority.Name" value="issue.Priority.Name">
-        </p>
-        <p>
-            <label>DueDate</label>
-            <input ng-model="issue.DueDate" type="text" value="{{issue.DueDate}}">
-        </p>
-        <p>Author: {{issue.Author.Username}}</p>
-        <p>Project: {{issue.Project.Name}}</p>
-        <p>Status: {{issue.Status.Name}}</p>
-        <p>Labels: <span ng-repeat="label in issue.Labels">{{label.Name}}, </span> </p>
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{issue.IssueKey}}
+                    <div style="display: inline-block" issue-project-leader ng-show="isTeamLeader || isAdmin"></div>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <h2 class="text-center" ng-bind="issue.Title"></h2>
+                <hr />
+                <h4 class="text-center">Description</h4>
+                <div class="alert alert-info text-center" role="alert" style="overflow: auto">
+                    <strong ng-bind="issue.Description" value="issue.Description"></strong>
+                </div>
+                <hr />
+                <h4 class="text-center">AssigneeId</h4>
+                <div class="alert alert-success text-center" role="success">
+                    <span>(current id: {{issue.Assignee.Id}})</span>
+                    <strong ng-bind="issue.Assignee.Username"></strong>
+                </div>
+                <hr />
+                <h4 class="text-center">PriorityId</h4>
+                <div class="alert alert-success text-center" role="success">
+                    <span>(current id: {{issue.Priority.Id}})</span>
+                    <strong ng-bind="issue.Priority.Name"></strong>
+                </div>
+                <hr />
+                <h4 class="text-center">DueDate</h4>
+                <div class="alert alert-success text-center" role="success">
+                    <strong ng-bind="issue.DueDate" type="text" value="{{issue.DueDate}}"></strong>
+                </div>
+                <hr />
+                <div class="alert alert-success" role="success">
+                    <strong>Author: {{issue.Author.Username}}</strong>
+                    <br />
+                    <strong>Project: {{issue.Project.Name}}</strong>
+                    <br />
+                    <strong>Status: {{issue.Status.Name}}</strong>
+                    <br />
+                    <strong>Labels: <span ng-repeat="label in issue.Labels">{{label.Name}}, </span> </strong>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="col-md-6">
         <div change-status ng-if="isAdmin || isTeamLeader || isAssignee"></div>

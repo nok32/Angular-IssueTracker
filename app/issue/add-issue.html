@@ -1,6 +1,6 @@
 <div ng-if="isTeamLeader || isAdmin || redirect()" class="row">
+    <div main-menu></div>
     <div class="row">
-        <div main-menu></div>
         <div class="col-md-6">
             <form name="AddIssueForm">
             <p>
@@ -38,9 +38,19 @@
             </p>
             <p>
                 <label>DueDate</label>
-                <input ng-model="issueToAdding.DueDate" type="datetime-local">
+                <div class='input-group date' id='datetimepicker1'>
+                    <input type='text' class="form-control" ng-model="issueToAdding.DueDate" value="{{issueToAdding.DueDate}}"/>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+                <script type="text/javascript">
+                    $(function () {
+                        $('#datetimepicker1').datetimepicker();
+                    });
+                </script>
             </p>
-            <a ng-click="addIssue(issueToAdding)" class="btn btn-success">Add Issue</a>
+            <button ng-click="addIssue(issueToAdding)" class="btn btn-success">Add Issue</button>
         </form>
         </div>
     </div>

@@ -5,6 +5,8 @@ angular.module('IssueTracker.identifier', [])
         function getToken() {
             if(localStorage.getItem('identity')){
                 return JSON.parse(localStorage.getItem('identity')).Token;
+            }else{
+                return false;
             }
         };
 
@@ -17,24 +19,32 @@ angular.module('IssueTracker.identifier', [])
                 };
 
                 return header;
+            }else{
+                return false;
             }
         }
 
         function isAdmin(){
             if(localStorage.identity){
                 return JSON.parse(localStorage.getItem('identity')).IsAdmin;
+            }else{
+                return false;
             }
         }
 
         function getUsername() {
             if (localStorage.identity) {
                 return JSON.parse(localStorage.getItem('identity')).Username;
+            }else{
+                return false;
             }
         };
 
         function getId(){
             if (localStorage.identity) {
                 return JSON.parse(localStorage.getItem('identity')).Id;
+            }else{
+                return false;
             }
         }
 

@@ -217,6 +217,8 @@ angular.module('IssueTracker.user', [])
                                     //handling code for options clicked
                                 }
                             });
+                            var path ='/';
+                            $location.path(path);
                         }, function(error){
                             noty.showNoty({
                                 text: 'You can not change you password successfully, please try again!',

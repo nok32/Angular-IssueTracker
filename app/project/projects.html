@@ -1,6 +1,27 @@
 <div class="row" ng-if="isAdmin || redirect()">
     <div main-menu></div>
     <div>
-        <li ng-repeat="curentProject in projects"><h1>{{curentProject.Name}}<a class="btn btn-success" ng-href="#/projects/{{curentProject.Id}}">View</a></h1></li>
+        <table class="table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        <h1>Project Name</h1>
+                    </th>
+                    <th>
+                        <h1>#</h1>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="curentProject in projects">
+                    <td>
+                        <h5>{{curentProject.Name}}</h5>
+                    </td>
+                    <td>
+                        <a class="btn btn-success" ng-href="#/projects/{{curentProject.Id}}">View</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>

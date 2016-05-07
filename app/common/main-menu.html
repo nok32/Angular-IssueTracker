@@ -10,7 +10,7 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a ng-controller="IssueController" class="btn btn-success" ng-href="#/projects/{{projectId}}" ng-if="isInIssueAdd">Go back to project</a></li>
+                <li><a class="btn btn-success" ng-href="#/projects/{{projectId}}" ng-if="isInIssueAdd">Go back to project</a></li>
                 <li><a ng-href="#/" class="btn btn-success">Dashboard</a></li>
                 <li><a ng-if="isAdmin" ng-href="#/projects"  class="btn btn-success">All Projects</a></li>
                 <li><a ng-if="isAdmin" ng-href="#/projects/add"  class="btn btn-success">Add Project</a></li>
@@ -20,3 +20,6 @@
         </div><!--/.nav-collapse -->
     </div><!--/.container-fluid -->
 </nav>
+<div class="alert alert-dismissible alert-info">
+    <strong>{{pageName}}</strong>
+</div>

@@ -30,6 +30,7 @@ angular.module('IssueTracker.home', [])
         'issue',
         'project',
         function($scope, $location, identity, issue, project){
+            $scope.pageName = 'Home page';
 
             $scope.isAuthenticated = identity.isAuthenticated();
 
@@ -51,7 +52,6 @@ angular.module('IssueTracker.home', [])
                         for (var i = 0; i <  $scope.issues.TotalPages; i++) {
                             $scope.pages.push(i + 1);
                         }
-                        console.log($scope.issues);
                     }, function(error){
                         //TODO
                     });
@@ -61,7 +61,6 @@ angular.module('IssueTracker.home', [])
                 project.getMyProjects(pageSize, page, filter)
                     .then(function(success){
                         $scope.projects = success;
-                        $scope.projects =success;
                         $scope.projectsPages = [];
                         for (var i = 0; i <  $scope.projects.TotalPages; i++) {
                             $scope.projectsPages.push(i + 1);
@@ -71,7 +70,7 @@ angular.module('IssueTracker.home', [])
                     });
             };
 
-            if (angular.isDefined(identity.getToken())) {
+            if (identity.getToken()) {
                 $scope.getMyIssues(5, 1, 'DueDate desc');
                 $scope.projectsFilter = 'Lead.Id=' + '"' + identity.getId() + '"';
                 $scope.getMyProjects(5, 1, $scope.projectsFilter);

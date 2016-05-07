@@ -58,12 +58,4 @@ angular.module('IssueTracker.main', [])
             restrict: 'A',
             templateUrl: 'app/common/main-menu.html'
         }
-    })
-
-    .controller('MainController', ['$scope','identity', function($scope, identity) {
-        if (identity.getToken()) {
-            $scope.currentUserId = function () {
-                return identity.getId();
-            };
-        }
-    }]);
+    });

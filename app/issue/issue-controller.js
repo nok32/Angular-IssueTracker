@@ -6,29 +6,26 @@ angular.module('IssueTracker.issue', [])
         $routeProvider.when('/projects/:id/:add-issue', {
             templateUrl: 'app/issue/add-issue.html',
             controller: 'IssueController',
-            resolve:{
-                isAdmin: function (identity) {
+            resolve: {
+                isAdmin: function(identity){
                     return identity.isAdmin();
                 },
-                isAuthenticated: function (identity) {
+                isAuthenticated: function ($route,identity) {
                     return identity.isAuthenticated();
                 },
-                isTeamLeader: function(identity, $route, project){
-                    var id = $route.current.params.id;
-                    return project.getProjectById(id)
-                        .then(function(success){
-                            return identity.isCurrentUserProjectLeader(success);
-                        });
+                isTeamLeader: function (identity, $route, project) {
+                    if (identity.getToken()) {
+                        var id = $route.current.params.id;
+                        return project.getProjectById(id)
+                            .then(function(currentProject){
+                                return identity.isCurrentUserProjectLeader(currentProject);
+                            });
+                    }else{
+                        return false;
+                    }
                 },
-                isCurrentUserAssignee : function(issue, $route, identity){
-                    return issue.getIssueById($route.current.params.id)
-                        .then(function(currentIssue){
-                            if(currentIssue.Assignee.Id === identity.getId()){
-                                return true;
-                            }else{
-                                return false;
-                            }
-                        });
+                isCurrentUserAssignee: function () {
+                    return true;
                 }
             }
         });
@@ -36,7 +33,7 @@ angular.module('IssueTracker.issue', [])
             templateUrl: 'app/issue/issue.html',
             controller: 'IssueController',
             resolve:{
-                isAdmin: function (identity) {
+                isAdmin: function(identity){
                     return identity.isAdmin();
                 },
                 isAuthenticated: function (identity) {
@@ -49,13 +46,11 @@ angular.module('IssueTracker.issue', [])
                                 return project.getProjectById(issueProject.Project.Id)
                                     .then(function(issueFullProject){
                                         var result = identity.isCurrentUserProjectLeader(issueFullProject);
-                                        console.log(result);
                                         return result;
                                     });
                             })
                 },
                 isCurrentUserAssignee : function(issue, $route, identity){
-                    console.log($route);
                     return issue.getIssueById($route.current.params.id)
                         .then(function(currentIssue){
                             if(currentIssue.Assignee.Id === identity.getId()){
@@ -71,7 +66,7 @@ angular.module('IssueTracker.issue', [])
             templateUrl: 'app/issue/edit-issue.html',
             controller: 'IssueController',
             resolve:{
-                isAdmin: function (identity) {
+                isAdmin: function(identity){
                     return identity.isAdmin();
                 },
                 isAuthenticated: function (identity) {
@@ -84,7 +79,6 @@ angular.module('IssueTracker.issue', [])
                             return project.getProjectById(issueProject.Project.Id)
                                 .then(function(issueFullProject){
                                     var result = identity.isCurrentUserProjectLeader(issueFullProject);
-                                    console.log(result);
                                     return result;
                                 });
                         })
@@ -168,16 +162,16 @@ angular.module('IssueTracker.issue', [])
         '$scope',
         '$routeParams',
         '$location',
-        'identity',
+        'noty',
         'user',
         'project',
         'issue',
         'label',
-        'isAdmin',
         'isAuthenticated',
         'isTeamLeader',
         'isCurrentUserAssignee',
-        function($scope, $routeParams, $location, identity, user, project, issue, label, isAdmin, isAuthenticated, isTeamLeader, isCurrentUserAssignee){
+        'isAdmin',
+        function($scope, $routeParams, $location, noty, user, project, issue, label, isAuthenticated, isTeamLeader, isCurrentUserAssignee, isAdmin){
 
             $scope.convertToJSON = function convertToJSON(obj) {
                 try {
@@ -196,11 +190,11 @@ angular.module('IssueTracker.issue', [])
 
             $scope.isTeamLeader = isTeamLeader;
 
+            $scope.pageName = 'Issue page';
 
             $scope.redirect = function(){
                 $location.path('/home/home');
             };
-
 
             $scope.issueChangeStatus = function(id, statusId){
                 issue.issueChangeStatus(id, statusId)
@@ -208,15 +202,9 @@ angular.module('IssueTracker.issue', [])
                         issue.getIssueById(id)
                             .then(function(success){
                                 $scope.issue = success;
-                                $scope.isCurrentUserAssignee($scope.issue);
                                 project.getProjectById($scope.issue.Project.Id)
                                     .then(function(success){
                                         $scope.project = success;
-                                        if(identity.isCurrentUserProjectLeader($scope.project) || identity.isAdmin()){
-                                            $scope.isCurentUserAdminOrProjectLeader = true;
-                                        }else{
-                                            $scope.isCurentUserAdminOrProjectLeader = false;
-                                        }
                                     }, function (error) {
                                         console.log(error);
                                     })
@@ -236,8 +224,9 @@ angular.module('IssueTracker.issue', [])
             };
 
             $scope.preparingIssueForDataBase = function(issueData){
-                    issueData.Project = $scope.convertToJSON(issueData.Project);
-                    issueData.Priority = $scope.convertToJSON(issueData.Priority);
+
+                issueData.Project = $scope.convertToJSON(issueData.Project);
+                issueData.Priority = $scope.convertToJSON(issueData.Priority);
 
                     var data = {
                         Title: issueData.Title,
@@ -324,13 +313,33 @@ angular.module('IssueTracker.issue', [])
 
             $scope.addIssue = function(issueToAdding){
 
+                console.log(issueToAdding);
+
                 var data = $scope.preparingIssueForDataBase(issueToAdding);
 
                 issue.addNewIssue(data)
                     .then(function(success){
-                        console.log(success);
+                        noty.showNoty({
+                            text: 'You created  successfully new issue!',
+                            ttl: 5000, //time to live in miliseconds
+                            type: 'success', //default, success, warning
+                            options: [],
+                            optionsCallBack:  function callback(optionClicked, optionIndexClicked) {
+                                //handling code for options clicked
+                            }
+                        });
+                        var path = '/issues/'+ success.Id;
+                        $location.path(path);
                     }, function(error){
-                        console.log(error);
+                        noty.showNoty({
+                            text: 'You can not create a issue, Error: ' + error.Message.toUpperCase(),
+                            ttl: 6000, //time to live in miliseconds
+                            type: 'warning', //default, success, warning
+                            options: [],
+                            optionsCallBack:  function callback(optionClicked, optionIndexClicked) {
+                                //handling code for options clicked
+                            }
+                        });
                     });
             };
 
@@ -340,9 +349,28 @@ angular.module('IssueTracker.issue', [])
 
                 issue.editIssue(id, data)
                     .then(function(success){
-                        console.log(success);
+                        noty.showNoty({
+                            text: 'You edited  successfully a issue!',
+                            ttl: 5000, //time to live in miliseconds
+                            type: 'success', //default, success, warning
+                            options: [],
+                            optionsCallBack:  function callback(optionClicked, optionIndexClicked) {
+                                //handling code for options clicked
+                            }
+                        });
+
+                        var path = '/issues/'+ id;
+                        $location.path(path);
                     }, function(error) {
-                        console.log(error);
+                        noty.showNoty({
+                            text: 'You can not edit a issue, Error: ' + error.Message.toUpperCase(),
+                            ttl: 6000, //time to live in miliseconds
+                            type: 'warning', //default, success, warning
+                            options: [],
+                            optionsCallBack:  function callback(optionClicked, optionIndexClicked) {
+                                //handling code for options clicked
+                            }
+                        });
                     })
             }
         }

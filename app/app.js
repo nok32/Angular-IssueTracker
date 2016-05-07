@@ -9,10 +9,10 @@ angular.module('IssueTracker', [
     'IssueTracker.identifier',
     'IssueTracker.label',
     'IssueTracker.issue',
-    'IssueTracker.main',
+    'IssueTracker.project',
     'IssueTracker.user',
     'IssueTracker.home',
-    'IssueTracker.project',
+    'IssueTracker.main',
 ]).config(['$routeProvider', function($routeProvider) {
   $routeProvider.otherwise({redirectTo: '/'});
 }]);

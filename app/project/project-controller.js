@@ -5,19 +5,79 @@ angular.module('IssueTracker.project', [])
     .config(['$routeProvider', function($routeProvider) {
         $routeProvider.when('/projects/add', {
             templateUrl: 'app/project/project-add.html',
-            controller: 'ProjectController'
+            controller: 'ProjectController',
+            resolve:{
+                isAdmin: function(identity){
+                    return identity.isAdmin();
+                },
+                isAuthenticated: function (identity) {
+                    return identity.isAuthenticated();
+                },
+                isTeamLeader: function(){
+                    return true;
+                }
+            }
         });
         $routeProvider.when('/projects/:id', {
             templateUrl: 'app/project/project-with-issues.html',
-            controller: 'ProjectController'
+            controller: 'ProjectController',
+            resolve:{
+                isAdmin: function(identity){
+                    return identity.isAdmin();
+                },
+                isAuthenticated: function (identity) {
+                    return identity.isAuthenticated();
+                },
+                isTeamLeader: function(identity, project, $route){
+                    if (identity.getToken()) {
+                        var id = $route.current.params.id;
+                        return project.getProjectById(id)
+                            .then(function(currentProject){
+                                return identity.isCurrentUserProjectLeader(currentProject);
+                            });
+                    }else{
+                        return false;
+                    }
+                }
+            }
         });
         $routeProvider.when('/projects/:id/edit', {
             templateUrl: 'app/project/project-edit.html',
-            controller: 'ProjectController'
+            controller: 'ProjectController',
+            resolve:{
+                isAdmin: function(identity){
+                    return identity.isAdmin();
+                },
+                isAuthenticated: function (identity) {
+                    return identity.isAuthenticated();
+                },
+                isTeamLeader: function(identity, project, $route){
+                    if (identity.getToken()) {
+                        var id = $route.current.params.id;
+                        return project.getProjectById(id)
+                            .then(function(currentProject){
+                                return identity.isCurrentUserProjectLeader(currentProject);
+                            });
+                    }else{
+                        return false;
+                    }
+                }
+            }
         });
         $routeProvider.when('/projects', {
             templateUrl: 'app/project/projects.html',
-            controller: 'ProjectController'
+            controller: 'ProjectController',
+            resolve:{
+                isAdmin: function(identity){
+                    return identity.isAdmin();
+                },
+                isAuthenticated: function (identity) {
+                    return identity.isAuthenticated();
+                },
+                isTeamLeader: function(){
+                    return true;
+                }
+            }
         });
     }])
 
@@ -72,49 +132,32 @@ angular.module('IssueTracker.project', [])
         '$scope',
         '$location',
         '$routeParams',
+        'noty',
         'issue',
         'identity',
         'project',
         'label',
         'user',
-        function ($scope, $location, $routeParams, issue, identity, project, label, user) {
+        'isAuthenticated',
+        'isAdmin',
+        'isTeamLeader',
+        function ($scope, $location, $routeParams, noty, issue, identity, project, label, user, isAuthenticated, isAdmin, isTeamLeader) {
 
-            $scope.isAuthenticated = identity.isAuthenticated();
+            $scope.redirect = function(){
+                $location.path('/home/home');
+            };
+
+            $scope.pageName = 'Project page';
+
+            $scope.isAuthenticated = isAuthenticated;
+
+            $scope.isAdmin = isAdmin;
+
+            $scope.isTeamLeader = isTeamLeader;
 
             $scope.userId = identity.getId();
 
-            $scope.isAdmin = identity.isAdmin();
-
-            $scope.isTeamLeader = function(project){
-                if(identity.isCurrentUserProjectLeader(project)){
-                    return true;
-                }else{
-                    return false;
-                }
-            };
-
             $scope.projectToAdd = {};
-
-            label.getLabels()
-                .then(function(success){
-                    $scope.existingLabels = success;
-                }, function(error){
-                    console.log(error);
-                });
-            user.getUsers()
-                .then(function(success){
-                    $scope.dataUsers = success
-                }, function(error){
-                    console.log(error);
-                });
-
-            $scope.isCurrentUserAdminOrProjectLeader = function(project){
-                if(identity.isAdmin() || identity.isCurrentUserProjectLeader(project)){
-                    return true;
-                }else{
-                    return false;
-                }
-            }
 
             $scope.getProjectIssues = function(id){
                 issue.getProjectIssues(id)
@@ -125,16 +168,30 @@ angular.module('IssueTracker.project', [])
                     });
             };
 
-            $scope.redirect = function(){
-                $location.path('/home/home');
-            }
-
             $scope.editProject = function(data){
                 project.editProject($routeParams.id, data)
                     .then(function(success){
-                        console.log(success);
+                        noty.showNoty({
+                            text: 'You edited successfully a project!',
+                            ttl: 5000, //time to live in miliseconds
+                            type: 'success', //default, success, warning
+                            options: [],
+                            optionsCallBack:  function callback(optionClicked, optionIndexClicked) {
+                                //handling code for options clicked
+                            }
+                        });
+                        var path = '/projects/'+ success.Id;
+                        $location.path(path);
                     }, function(error){
-                        console.log(error);
+                        noty.showNoty({
+                            text: 'You can not edit a project,Error: ' + error.Message.toUpperCase(),
+                            ttl: 6000, //time to live in miliseconds
+                            type: 'warning', //default, success, warning
+                            options: [],
+                            optionsCallBack:  function callback(optionClicked, optionIndexClicked) {
+                                //handling code for options clicked
+                            }
+                        });
                     })
             };
 
@@ -194,24 +251,54 @@ angular.module('IssueTracker.project', [])
                 var prepareData = $scope.preparingProjectForDataBase(data);
                 project.addProject(prepareData)
                     .then(function(success){
-                        console.log(success);
+                        noty.showNoty({
+                            text: 'You create successfully added!',
+                            ttl: 5000, //time to live in miliseconds
+                            type: 'success', //default, success, warning
+                            options: [],
+                            optionsCallBack:  function callback(optionClicked, optionIndexClicked) {
+                                //handling code for options clicked
+                            }
+                        });
+                        var path = '/projects/'+ success.Id;
+                        $location.path(path);
                     }, function(error){
-                        console.log(error);
+                        noty.showNoty({
+                            text: 'You can not create a project, Error: ' + error.Message.toUpperCase(),
+                            ttl: 6000, //time to live in miliseconds
+                            type: 'warning', //default, success, warning
+                            options: [],
+                            optionsCallBack:  function callback(optionClicked, optionIndexClicked) {
+                                //handling code for options clicked
+                            }
+                        });
                     });
             };
 
-            if (identity.getToken()) {
+            if ($scope.isAuthenticated) {
 
                 project.getProjects()
                     .then(function(responce){
                         $scope.projects = responce;
                     });
 
+                label.getLabels()
+                    .then(function(success){
+                        $scope.existingLabels = success;
+                    }, function(error){
+                        console.log(error);
+                    });
+                user.getUsers()
+                    .then(function(success){
+                        $scope.dataUsers = success
+                    }, function(error){
+                        console.log(error);
+                    });
+
                 if ($routeParams.id) {
                     project.getProjectById($routeParams.id)
                         .then(function(success){
                             $scope.project = success;
-                            $scope.isTeamLeader = $scope.isTeamLeader($scope.project);
                             $scope.getProjectIssues($scope.project.Id);
 
                         }, function (error) {
