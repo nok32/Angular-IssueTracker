@@ -302,13 +302,13 @@ angular.module('IssueTracker.issue', [])
                         project.getProjectById($scope.issue.Project.Id)
                             .then(function(success){
                                 $scope.project = success;
-
+                                $scope.currentProjectPriorities = $scope.project.Priorities;
                                 $scope.issueToEdit = $scope.issue;
-
                             }, function (error) {
                                 console.log(error);
                             })
                     });
+
             }
 
             $scope.addIssue = function(issueToAdding){

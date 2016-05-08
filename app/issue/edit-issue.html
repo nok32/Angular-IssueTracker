@@ -14,12 +14,12 @@
                 <p>
                     <label>Projects</label>
                     <!--TODO to work with normal add issue-->
-                    <select class="form-control" ng-options="project.Name for project in dataProjects track by project.Id" ng-model="issueToEdit.Project" required></select>
+                    <input class="form-control" ng-model="issueToEdit.Project.Name"required>
                 </p>
                 <p>
                     <label>Priority</label>
                     <select class="form-control" ng-model="issueToEdit.Priority" required>
-                        <option ng-repeat="priority in issueToEdit.Project.Priorities" value="{{priority}}">{{priority.Name}}</option>
+                        <option ng-repeat="priority in currentProjectPriorities" value="{{priority}}">{{priority.Name}}</option>
                     </select>
                 </p>
                 <p>
@@ -29,7 +29,7 @@
                         <option ng-repeat="label in existingLabels" value="{{label.Name}}">{{label.Name}}</option>
                     </datalist>
                 </p>
-                <p>
+                <p ng-if="isAdmin">
                     <label>Assignee</label>
                     <select class="form-control" ng-options="user.Username for user in dataUsers track by user.Id" ng-model="issueToEdit.Assignee" required></select>
                 </p>
