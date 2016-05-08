@@ -116,6 +116,12 @@ angular.module('IssueTracker.issue', [])
             return requester.get(url, identity.getHeaderWithToken());
         }
 
+        function getProjectIssuesWithPaging(projectId, pageSize, pageNumber){
+            var url = 'Issues/?pageSize=' + pageSize +'&pageNumber=' + pageNumber + '&filter=ProjectId==' + projectId;
+
+            return requester.get(url, identity.getHeaderWithToken());
+        }
+
         function addNewIssue(data){
             var url = 'Issues/';
 
@@ -140,7 +146,8 @@ angular.module('IssueTracker.issue', [])
             getProjectIssues: getProjectIssues,
             addNewIssue: addNewIssue,
             issueChangeStatus: issueChangeStatus,
-            editIssue: editIssue
+            editIssue: editIssue,
+            getProjectIssuesWithPaging: getProjectIssuesWithPaging
         };
     }])
 
@@ -262,55 +269,6 @@ angular.module('IssueTracker.issue', [])
                     return data;
             };
 
-            if($routeParams.add && $scope.isAuthenticated) {
-                $scope.isInIssueAdd = true;
-                $scope.projectId = $routeParams.id;
-
-                project.getProjects()
-                    .then(function(responce){
-                        $scope.dataProjects = responce;
-                    });
-
-                project.getProjectById($scope.projectId)
-                    .then(function(responce){
-                        $scope.projectCurrent = responce;
-                    });
-                $scope.getExistingLabels();
-
-                user.getUsers()
-                    .then(function(responce){
-                        $scope.dataUsers = responce;
-                    });
-            }
-
-            if($routeParams.id && $scope.isAuthenticated) {
-                user.getUsers()
-                    .then(function(responce){
-                        $scope.dataUsers = responce;
-                    });
-
-                project.getProjects()
-                    .then(function(responce){
-                        $scope.dataProjects = responce;
-                    });
-
-                $scope.getExistingLabels();
-
-                issue.getIssueById($routeParams.id)
-                    .then(function(success){
-                        $scope.issue = success;
-                        project.getProjectById($scope.issue.Project.Id)
-                            .then(function(success){
-                                $scope.project = success;
-                                $scope.currentProjectPriorities = $scope.project.Priorities;
-                                $scope.issueToEdit = $scope.issue;
-                            }, function (error) {
-                                console.log(error);
-                            })
-                    });
-
-            }
-
             $scope.addIssue = function(issueToAdding){
 
                 var data = $scope.preparingIssueForDataBase(issueToAdding);
@@ -371,5 +329,55 @@ angular.module('IssueTracker.issue', [])
                         });
                     })
             }
+
+            if($routeParams.add && $scope.isAuthenticated) {
+                $scope.isInIssueAdd = true;
+                $scope.projectId = $routeParams.id;
+
+                project.getProjects()
+                    .then(function(responce){
+                        $scope.dataProjects = responce;
+                    });
+
+                project.getProjectById($scope.projectId)
+                    .then(function(responce){
+                        $scope.projectCurrent = responce;
+                    });
+                $scope.getExistingLabels();
+
+                user.getUsers()
+                    .then(function(responce){
+                        $scope.dataUsers = responce;
+                    });
+            }
+
+            if($routeParams.id && $scope.isAuthenticated) {
+                user.getUsers()
+                    .then(function(responce){
+                        $scope.dataUsers = responce;
+                    });
+
+                project.getProjects()
+                    .then(function(responce){
+                        $scope.dataProjects = responce;
+                    });
+
+                $scope.getExistingLabels();
+
+                issue.getIssueById($routeParams.id)
+                    .then(function(success){
+                        $scope.issue = success;
+                        project.getProjectById($scope.issue.Project.Id)
+                            .then(function(success){
+                                $scope.project = success;
+                                $scope.currentProjectPriorities = $scope.project.Priorities;
+                                $scope.issueToEdit = $scope.issue;
+                            }, function (error) {
+                                console.log(error);
+                            })
+                    });
+
+            }
+
         }
     ]);

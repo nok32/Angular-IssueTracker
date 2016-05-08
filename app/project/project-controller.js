@@ -83,7 +83,13 @@ angular.module('IssueTracker.project', [])
 
     .factory('project', ['$q','requester', 'identity', function($q, requester, identity){
         function getProjects(){
-            var url = 'Projects/?pageSize=100&pageNumber=1&filterS';
+            var url = 'Projects/?pageSize=&pageNumber=1&filterS';
+
+            return requester.get(url, identity.getHeaderWithToken())
+        };
+
+        function getProjectsByPaging(pageSize, page){
+            var url = 'Projects/?pageSize=' + pageSize +'&pageNumber=' +page + '&filter=';
 
             return requester.get(url, identity.getHeaderWithToken())
         };
@@ -117,7 +123,8 @@ angular.module('IssueTracker.project', [])
             getProjectById: getProjectById,
             getMyProjects: getMyProjects,
             editProject: editProject,
-            addProject: addProject
+            addProject: addProject,
+            getProjectsByPaging: getProjectsByPaging
         };
     }])
 
@@ -163,6 +170,7 @@ angular.module('IssueTracker.project', [])
                 issue.getProjectIssues(id)
                     .then(function(success){
                         $scope.issues = success;
+                        console.log($scope.issues);
                     }, function(error){
                         console.log(error);
                     });
@@ -275,12 +283,33 @@ angular.module('IssueTracker.project', [])
                     });
             };
 
-            if ($scope.isAuthenticated) {
-
-                project.getProjects()
+            $scope.getProjectByPage = function(pageSize, page){
+                project.getProjectsByPaging(pageSize, page)
                     .then(function(responce){
                         $scope.projects = responce;
+                        $scope.pages = [];
+                        for (var i = 0; i <  $scope.projects.TotalPages; i++) {
+                            $scope.pages.push(i + 1);
+                        }
                     });
+            };
+
+            $scope.getProjectIssuesByPage = function(projectId, pageSize, page, filter){
+                issue.getProjectIssuesWithPaging(projectId, pageSize, page)
+                    .then(function(success){
+                        $scope.issues = success.Issues;
+                        console.log(success);
+                        $scope.pagesWithIssues = [];
+                        for (var i = 0; i <  success.TotalPages; i++) {
+                            $scope.pagesWithIssues.push(i + 1);
+                        }
+                        console.log($scope.pagesWithIssues);
+                    })
+            };
+
+            if ($scope.isAuthenticated) {
+
+                $scope.getProjectByPage(15, 1);
 
                 label.getLabels()
                     .then(function(success){
@@ -298,8 +327,9 @@ angular.module('IssueTracker.project', [])
                 if ($routeParams.id) {
                     project.getProjectById($routeParams.id)
                         .then(function(success){
+                            $scope.projectId = $routeParams.id;
                             $scope.project = success;
-                            $scope.getProjectIssues($scope.project.Id);
+                            $scope.getProjectIssuesByPage($scope.projectId, 10, 1);
 
                         }, function (error) {
                             console.log(error);

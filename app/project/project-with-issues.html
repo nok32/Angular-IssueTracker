@@ -53,7 +53,11 @@
             </table>
             <ul class="pagination">
                 <ul class="pagination">
-                    <li ng-repeat="page in pages" ><a href="#/" ng-click="getMyIssues(5,  page, 'DueDate desc')" value="{{page}}">{{page}}<span class="sr-only">(current)</span></a></li>
+                    <li ng-repeat="currentPageIssue in pagesWithIssues" >
+                        <a href="#/projects/{{projectId}}" ng-click="getProjectIssuesByPage(projectId, 10,  currentPageIssue)" value="{{currentPageIssue}}">{{currentPageIssue}}
+                            <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
                 </ul>
             </ul>
         </div>
